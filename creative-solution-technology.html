@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Creative Solution Technology — Web Development, Digital Marketing & IT Staffing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    /* ==========================================================================
+       DESIGN TOKENS ONLY — STRICT COMPLIANCE
+       ========================================================================== */
+    :root {
+      /* Colors */
+      --cst-bg: #F0F0F0;
+      --cst-text-primary: #262732;
+      --cst-accent-red: #FF2E00;
+      --cst-accent-blue: #3183FF;
+      --cst-accent-coral: #FF8562;
+      --cst-accent-yellow: #F5D00B;
+      --cst-accent-teal: #00F39C;
+      --cst-accent-green: #4CFF49;
+      --cst-text-light-muted: #BBBBBB;
+      --cst-text-light-subtle: #E0E0E0;
+      --cst-white: #FFFFFF;
+
+      /* Typography */
+      --cst-font-family: 'Inter', Arial, EuclidCircularB, 'Times New Roman', sans-serif;
+      --cst-weight-regular: 400;
+      --cst-weight-semibold: 600;
+
+      --cst-size-caption: 13px;
+      --cst-size-label: 15px;
+      --cst-size-body: 21px;
+      --cst-size-subheading: 32px;
+      --cst-size-section: 50px;
+      --cst-size-hero: 86px;
+
+      /* Spacing: 4px base (6px, 10px, 16px, 20px, 40px, 56px, 80px) */
+      --cst-space-6: 6px;
+      --cst-space-10: 10px;
+      --cst-space-16: 16px;
+      --cst-space-20: 20px;
+      --cst-space-40: 40px;
+      --cst-space-56: 56px;
+      --cst-space-80: 80px;
+
+      /* Radius: strictly only 16px 16px 6px, 16px, 30px, 50px, 80px, 3000px */
+      --cst-radius-chip: 16px;
+      --cst-radius-mixed: 16px 16px 6px 16px;
+      --cst-radius-card: 30px;
+      --cst-radius-panel: 50px;
+      --cst-radius-band: 80px;
+      --cst-radius-pill: 3000px;
+
+      /* Shadows */
+      --cst-shadow-small: rgba(18, 17, 17, 0.1) 0px 5px 20px 2px;
+      --cst-shadow-medium: rgba(0, 0, 0, 0.12) 0px 0px 24px 0px;
+    }
+
+    /* Reset & Base */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      background-color: var(--cst-bg);
+      color: var(--cst-text-primary);
+      font-family: var(--cst-font-family);
+      font-weight: var(--cst-weight-regular);
+      line-height: 1.5;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    /* Container */
+    .cst-container {
+      width: 100%;
+      max-width: 1280px;
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: var(--cst-space-20);
+      padding-right: var(--cst-space-20);
+    }
+
+    @media (min-width: 768px) {
+      .cst-container {
+        padding-left: var(--cst-space-40);
+        padding-right: var(--cst-space-40);
+      }
+    }
+
+    /* ==========================================================================
+       BUTTONS & LINKS (Hover, Focus-Visible, Disabled)
+       ========================================================================== */
+    .cst-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--cst-font-family);
+      font-size: var(--cst-size-label);
+      font-weight: var(--cst-weight-semibold);
+      line-height: 1.2;
+      text-decoration: none;
+      cursor: pointer;
+      border-radius: var(--cst-radius-pill);
+      padding: var(--cst-space-16) var(--cst-space-40);
+      transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+      white-space: nowrap;
+      user-select: none;
+      border: 2px solid transparent;
+    }
+
+    .cst-btn:active {
+      transform: scale(0.98);
+    }
+
+    .cst-btn:focus-visible {
+      outline: 3px solid var(--cst-accent-blue);
+      outline-offset: 3px;
+    }
+
+    .cst-btn:disabled,
+    .cst-btn[aria-disabled="true"] {
+      opacity: 0.45;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    /* Primary Solid Button */
+    .cst-btn-primary {
+      background-color: var(--cst-accent-blue);
+      color: var(--cst-white);
+      border-color: var(--cst-accent-blue);
+      box-shadow: var(--cst-shadow-small);
+    }
+
+    .cst-btn-primary:hover {
+      background-color: var(--cst-text-primary);
+      border-color: var(--cst-text-primary);
+      color: var(--cst-white);
+    }
+
+    /* Secondary Outlined Button */
+    .cst-btn-outline {
+      background-color: transparent;
+      color: var(--cst-text-primary);
+      border-color: var(--cst-text-primary);
+    }
+
+    .cst-btn-outline:hover {
+      background-color: var(--cst-text-primary);
+      color: var(--cst-white);
+    }
+
+    /* White Solid Button (for Dark CTA band) */
+    .cst-btn-white {
+      background-color: var(--cst-white);
+      color: var(--cst-text-primary);
+      border-color: var(--cst-white);
+      box-shadow: var(--cst-shadow-small);
+    }
+
+    .cst-btn-white:hover {
+      background-color: var(--cst-accent-blue);
+      border-color: var(--cst-accent-blue);
+      color: var(--cst-white);
+    }
+
+    /* Text Navigation Links */
+    .cst-nav-link {
+      font-family: var(--cst-font-family);
+      font-size: var(--cst-size-label);
+      font-weight: var(--cst-weight-semibold);
+      color: var(--cst-text-primary);
+      text-decoration: none;
+      padding: var(--cst-space-6) var(--cst-space-10);
+      border-radius: var(--cst-radius-chip);
+      transition: color 0.15s ease, background-color 0.15s ease;
+    }
+
+    .cst-nav-link:hover {
+      color: var(--cst-accent-blue);
+      background-color: rgba(49, 131, 255, 0.08);
+    }
+
+    .cst-nav-link:focus-visible {
+      outline: 2px solid var(--cst-accent-blue);
+      outline-offset: 2px;
+    }
+
+    .cst-nav-link:disabled,
+    .cst-nav-link[aria-disabled="true"] {
+      opacity: 0.45;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    /* ==========================================================================
+       1. STICKY HEADER
+       ========================================================================== */
+    .cst-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background-color: rgba(240, 240, 240, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--cst-text-light-subtle);
+      transition: box-shadow 0.2s ease;
+    }
+
+    .cst-header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 80px;
+      gap: var(--cst-space-20);
+    }
+
+    .cst-logo {
+      font-family: var(--cst-font-family);
+      font-size: var(--cst-size-subheading);
+      font-weight: var(--cst-weight-semibold);
+      color: var(--cst-text-primary);
+      text-decoration: none;
+      letter-spacing: -0.5px;
+      white-space: nowrap;
+    }
+
+    .cst-logo:focus-visible {
+      outline: 2px solid var(--cst-accent-blue);
+      outline-offset: 4px;
+      border-radius: var(--cst-radius-chip);
+    }
+
+    .cst-nav-menu {
+      display: none;
+      align-items: center;
+      gap: var(--cst-space-20);
+      list-style: none;
+    }
+
+    @media (min-width: 840px) {
+      .cst-nav-menu {
+        display: flex;
+      }
+    }
+
+    .cst-header-action {
+      display: flex;
+      align-items: center;
+      gap: var(--cst-space-16);
+    }
+
+    .cst-mobile-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: 1px solid var(--cst-text-primary);
+      border-radius: var(--cst-radius-pill);
+      padding: var(--cst-space-6) var(--cst-space-16);
+      font-family: var(--cst-font-family);
+      font-size: var(--cst-size-caption);
+      font-weight: var(--cst-weight-semibold);
+      color: var(--cst-text-primary);
+      cursor: pointer;
+    }
+
+    @media (min-width: 840px) {
+      .cst-mobile-toggle {
+        display: none;
+      }
+    }
+
+    /* ==========================================================================
+       2. HERO SECTION
+       ========================================================================== */
+    .cst-hero {
+      padding-top: var(--cst-space-56);
+      padding-bottom: var(--cst-space-80);
+      position: relative;
+    }
+
+    @media (min-width: 768px) {
+      .cst-hero {
+        padding-top: var(--cst-space-80);
+        padding-bottom: var(--cst-space-80);
+      }
+    }
+
+    .cst-hero-content {
+      max-width: 1040px;
+    }
+
+    /* Pill Tag */
+    .cst-pill-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--cst-space-10);
+      background-color: var(--cst-white);
+      color: var(--cst-text-primary);
+      font-family: var(--cst-font-family);
+      font-size: var(--cst-size-caption);
+      font-weight: var(--cst-weight-semibold);
+      line-height: 1;
+      padding: var(--cst-space-10) var(--cst-space-20);
+      border-radius: var(--cst-radius-pill);
+      border: 1px solid var(--cst-text-light-subtle);
+      box-shadow: var(--cst-shadow-small);
+      margin-bottom: var(--cst-space-20);
+      width: fit-content;
+    }
+
+    .cst-pill-tag-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 3000px;
+      background-color: var(--cst-accent-blue);
+      display: inline-block;
+    }
+
+    /* Hero 86px Headline */
+    .cst-hero-headline {
+      font-family: var(--cst-font-family);
+      font-size: 42px;
+      font-weight: var(--cst-weight-semibold);
+      color: var(--cst-text-primary);
+      line-height: 1.06;
+      letter-spacing: -1.8px;
+      margin-bottom: var(--cst-space-20);
+    }
+
+    @media (min-width: 640px) {
+      .cst-hero-headline {
+        font-size: 60px;
+        letter-spacing: -2px;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .cst-hero-headline {
+        font-size: var(--cst-size-hero); /* 86px */
+        letter-spacing: -3px;
+      }
+    }
+
+    /* Hero Subheading (32px) */
+    .cst-hero-subheading {
+      font-family: var(--cst-font-family);
+      font-size: 24px;
+      font-weight: var(--cst-weight-regular);
+      color: var(--cst-text-primary);
+      line-height: 1.35;
+      margin-bottom: var(--cst-space-40);
+      max-width: 860px;
+    }
+
+    @media (min-width: 768px) {
+      .cst-hero-subheading {
+        font-size: var(--cst-size-subheading); /* 32px */
+      }
+    }
+
+    /* Hero Buttons Group */
+    .cst-hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--cst-space-16);
+      margin-bottom: var(--cst-space-56);
+    }
+
+    /* Three Small Stat Chips */
+    .cst-stat-chips {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--cst-space-16);
+      padding-top: var(--cst-space-20);
+      border-top: 1px solid var(--cst-text-light-subtle);
+    }
+
+    .cst-stat-chip {
+      display: inline-flex;
+      align-items: center;
+      background-color: var(--cst-white);
+      color: var(--cst-text-primary);
+      font-family: var(--cst-font-family);
+      font-size: var(--cst-size-label);
+      font-weight: var(--cst-weight-semibold);
+      padding: var(--cst-space-10) var(--cst-space-20);
+      border-radius: var(--cst-radius-pill);
+      border: 1px solid var(--cst-text-light-subtle);
+      box-shadow: var(--cst-shadow-small);
+    }
+
+    /* ==========================================================================
+       3. SERVICES SECTION
+       ========================================================================== */
+    .cst-services {
+      padding-top: var(--cst-space-80);
+      padding-bottom: var(--cst-space-80);
+    }
+
+    .cst-section-header {
+      margin-bottom: var(--cst-space-56);
+    }
+
+    .cst-section-title {
+      font-family: var(--cst-font-family);
+      font-size: 36px;
+      font-weight: var(--cst-weight-semibold);
+      color: var(--cst-text-primary);
+      line-height: 1.15;
+      letter-spacing: -1.2px;
+      margin-bottom: var(--cst-space-16);
+    }
+
+    @media (min-width: 768px) {
+      .cst-section-title {
+        font-size: var(--cst-size-section); /* 50px */
+      }
+    }
+
+    .cst-section-intro {
+      font-family: var(--cst-font-family);
+      font-size: var(--cst-size-body); /* 21px */
+      font-weight: var(--cst-weight-regular);
+      color: var(--cst-text-primary);
+      max-width: 760px;
+      line-height: 1.45;
+    }
+
+    /* Services Grid: 6 cards, 30px radius */
+    .cst-services-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--cst-space-20);
+    }
+
+    @media (min-width: 640px) {
+      .cst-services-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .cst-services-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .cst-service-card {
+      background-color: var(--cst-white);
+      border-radius: var(--cst-radius-card); /* 30px */
+      padding: var(--cst-space-40);
+      border: 1px solid var(--cst-text-light-subtle);
+      box-shadow: var(--cst-shadow-small);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      position: relative;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .cst-service-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--cst-shadow-medium);
+    }
+
+    /* Small colored square swatch cycling through accent colors */
+    .cst-color-swatch {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      margin-bottom: var(--cst-space-20);
+      flex-shrink: 0;
+    }
+
+    .swatch-red { background-color: var(--cst-accent-red); }
+    .swatch-blue { background-color: var(--cst-accent-blue); }
+    .swatch-coral { background-color: var(--cst-accent-coral); }
+    .swatch-yellow { background-color: var(--cst-accent-yellow); }
+    .swatch-teal { background-color: var(--cst-accent-teal); }
+    .swatch-green { background-color: var(--cst-accent-green); }
+
+    .cst-service-title {
+      font-family: var(--cst-font-family);
+      font-size: 24px;
+      font-weight: var(--cst-weight-semibold);
+      color: var(--cst-text-primary);
+      line-height: 1.25;
+      margin-bottom: var(--cst-space-16);
+    }
+
+    .cst-service-desc {
+      font-family: var(--cst-font-family);
+      font-size: var(--cst-size-body); /* 21px */
+      font-weight: var(--cst-weight-regular);
+      color: var(--cst-text-primary);
+      line-height: 1.45;
+    }
+
+    /* ==========================================================================
+       4. DARK CTA BAND
+       ========================================================================== */
+    .cst-cta-band-wrapper {
+      padding-top: var(--cst-space-40);
+      padding-bottom: var(--cst-space-80);
+    }
+
+    .cst-cta-band {
+      background-color: var(--cst-text-primary); /* #262732 */
+      color: var(--cst-white);
+      border-radius: var(--cst-radius-panel); /* 50px */
+      padding: var(--cst-space-56) var(--cst-space-20);
+      box-shadow: var(--cst-shadow-medium);
+      text-align: center;
+    }
+
+    @media (min-width: 768px) {
+      .cst-cta-band {
+        padding: var(--cst-space-80) var(--cst-space-56);
+        border-radius: var(--cst-radius-band); /* 80px */
+      }
+    }
+
+    .cst-cta-heading {
+      font-family: var(--cst-font-family);
+      font-size: 32px;
+      font-weight: var(--cst-weight-semibold);
+      color: var(--cst-white);
+      line-height: 1.2;
+      letter-spacing: -1px;
+      max-width: 820px;
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: var(--cst-space-40);
+    }
+
+    @media (min-width: 768px) {
+      .cst-cta-heading {
+        font-size: var(--cst-size-section); /* 50px */
+      }
+    }
+
+    /* ==========================================================================
+       5. FOOTER (Three Columns: Visit, Talk to us, Follow)
+       ========================================================================== */
+    .cst-footer {
+      background-color: var(--cst-bg);
+      border-top: 1px solid var(--cst-text-light-subtle);
+      padding-top: var(--cst-space-80);
+      padding-bottom: var(--cst-space-80);
+    }
+
+    .cst-footer-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--cst-space-40);
+      margin-bottom: var(--cst-space-56);
+    }
+
+    @media (min-width: 768px) {
+      .cst-footer-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--cst-space-56);
+      }
+    }
+
+    .cst-footer-col-title {
+      font-family: var(--cst-font-family);
+      font-size: var(--cst-size-subheading); /* 32px */
+      font-weight: var(--cst-weight-semibold);
+      color: var(--cst-text-primary);
+      line-height: 1.2;
+      margin-bottom: var(--cst-space-16);
+    }
+
+    .cst-footer-col-text {
+      font-family: var(--cst-font-family);
+      font-size: var(--cst-size-body); /* 21px */
+      font-weight: var(--cst-weight-regular);
+      color: var(--cst-text-primary);
+      line-height: 1.5;
+    }
+
+    .cst-footer-link {
+      display: inline-block;
+      font-family: var(--cst-font-family);
+      font-size: var(--cst-size-body); /* 21px */
+      font-weight: var(--cst-weight-regular);
+      color: var(--cst-text-primary);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      transition: color 0.15s ease;
+      margin-bottom: var(--cst-space-6);
+    }
+
+    .cst-footer-link:hover {
+      color: var(--cst-accent-blue);
+    }
+
+    .cst-footer-link:focus-visible {
+      outline: 2px solid var(--cst-accent-blue);
+      outline-offset: 3px;
+      border-radius: var(--cst-radius-chip);
+    }
+
+    .cst-footer-bottom {
+      display: flex;
+      flex-direction: column;
+      sm-flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--cst-space-16);
+      padding-top: var(--cst-space-40);
+      border-top: 1px solid var(--cst-text-light-subtle);
+    }
+
+    @media (min-width: 640px) {
+      .cst-footer-bottom {
+        flex-direction: row;
+        align-items: center;
+      }
+    }
+
+    .cst-copyright {
+      font-family: var(--cst-font-family);
+      font-size: var(--cst-size-caption); /* 13px */
+      font-weight: var(--cst-weight-regular);
+      color: var(--cst-text-primary);
+    }
+
+    /* Small badge in footer */
+    .cst-token-badge {
+      font-family: var(--cst-font-family);
+      font-size: var(--cst-size-caption); /* 13px */
+      font-weight: var(--cst-weight-semibold);
+      color: var(--cst-text-primary);
+      background: var(--cst-white);
+      border: 1px solid var(--cst-text-light-subtle);
+      border-radius: var(--cst-radius-pill);
+      padding: var(--cst-space-6) var(--cst-space-16);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--cst-space-6);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. STICKY HEADER -->
+  <header class="cst-header" id="top">
+    <div class="cst-container">
+      <div class="cst-header-inner">
+        <a href="#top" class="cst-logo" aria-label="Creative Solution Technology Homepage">
+          Creative Solution Technology
+        </a>
+
+        <nav aria-label="Primary navigation">
+          <ul class="cst-nav-menu">
+            <li><a href="#services" class="cst-nav-link">Services</a></li>
+            <li><a href="#about" class="cst-nav-link">About</a></li>
+            <li><a href="#contact" class="cst-nav-link">Contact</a></li>
+          </ul>
+        </nav>
+
+        <div class="cst-header-action">
+          <a href="#contact" class="cst-btn cst-btn-primary">
+            Get in touch.
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main>
+    <!-- 2. HERO SECTION -->
+    <section class="cst-hero" id="about">
+      <div class="cst-container">
+        <div class="cst-hero-content">
+          <!-- Small pill tag -->
+          <div class="cst-pill-tag">
+            <span class="cst-pill-tag-dot" aria-hidden="true"></span>
+            <span>Staffing · Web · Digital Marketing</span>
+          </div>
+
+          <!-- Large 86px-scale headline -->
+          <h1 class="cst-hero-headline">
+            Technology and marketing that gets used.
+          </h1>
+
+          <!-- Subheading -->
+          <p class="cst-hero-subheading">
+            We build responsive web platforms, deploy senior engineering teams, and drive measurable digital marketing campaigns from Hyderabad for growing global businesses.
+          </p>
+
+          <!-- Two buttons: Enroll now (solid), See our services (outlined) -->
+          <div class="cst-hero-actions">
+            <a href="#contact" class="cst-btn cst-btn-primary">
+              Enroll now
+            </a>
+            <a href="#services" class="cst-btn cst-btn-outline">
+              See our services
+            </a>
+          </div>
+
+          <!-- Three small stat chips -->
+          <div class="cst-stat-chips" aria-label="Company highlights">
+            <div class="cst-stat-chip">
+              6+ core service lines
+            </div>
+            <div class="cst-stat-chip">
+              HYD Madhapur-based team
+            </div>
+            <a href="tel:+914035032090" class="cst-stat-chip cst-nav-link" style="text-decoration: none;">
+              +91 40 3503 2090
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. SERVICES SECTION -->
+    <section class="cst-services" id="services">
+      <div class="cst-container">
+        <!-- Section Header -->
+        <div class="cst-section-header">
+          <h2 class="cst-section-title">
+            Providing the best IT solutions &amp; Services
+          </h2>
+          <p class="cst-section-intro">
+            Comprehensive digital capabilities designed around how customers actually interact with modern technology.
+          </p>
+        </div>
+
+        <!-- 6 Cards in a Responsive Grid (30px radius, cycling accent swatches) -->
+        <div class="cst-services-grid">
+          <!-- Card 1: Web Design & Hosting (Accent Red) -->
+          <article class="cst-service-card">
+            <div class="cst-color-swatch swatch-red" aria-hidden="true"></div>
+            <h3 class="cst-service-title">
+              Web Design &amp; Hosting
+            </h3>
+            <p class="cst-service-desc">
+              Websites planned around how visitors actually use them, built with modern technologies and hosted reliably.
+            </p>
+          </article>
+
+          <!-- Card 2: Staffing Solutions (Accent Blue) -->
+          <article class="cst-service-card">
+            <div class="cst-color-swatch swatch-blue" aria-hidden="true"></div>
+            <h3 class="cst-service-title">
+              Staffing Solutions
+            </h3>
+            <p class="cst-service-desc">
+              Designers, developers, and project managers assembled for your build — frontend, backend, UX/UI, and QA.
+            </p>
+          </article>
+
+          <!-- Card 3: Technology Consulting (Accent Coral) -->
+          <article class="cst-service-card">
+            <div class="cst-color-swatch swatch-coral" aria-hidden="true"></div>
+            <h3 class="cst-service-title">
+              Technology Consulting
+            </h3>
+            <p class="cst-service-desc">
+              We assess your IT needs, plan a strategy, and manage implementation with a clear path to a future-ready setup.
+            </p>
+          </article>
+
+          <!-- Card 4: Digital Marketing (Accent Yellow) -->
+          <article class="cst-service-card">
+            <div class="cst-color-swatch swatch-yellow" aria-hidden="true"></div>
+            <h3 class="cst-service-title">
+              Digital Marketing
+            </h3>
+            <p class="cst-service-desc">
+              Social, email, content, SEO, and paid advertising brought together into one strategy, guided by analytics.
+            </p>
+          </article>
+
+          <!-- Card 5: SEO & Backlinks (Accent Teal) -->
+          <article class="cst-service-card">
+            <div class="cst-color-swatch swatch-teal" aria-hidden="true"></div>
+            <h3 class="cst-service-title">
+              SEO &amp; Backlinks
+            </h3>
+            <p class="cst-service-desc">
+              On-site optimization paired with credible backlink building, so search engines see your site as authoritative.
+            </p>
+          </article>
+
+          <!-- Card 6: Marketing Analysis (Accent Green) -->
+          <article class="cst-service-card">
+            <div class="cst-color-swatch swatch-green" aria-hidden="true"></div>
+            <h3 class="cst-service-title">
+              Marketing Analysis
+            </h3>
+            <p class="cst-service-desc">
+              We study market trends, consumer behaviour, and competitors to guide decisions and improve marketing ROI.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. DARK CTA BAND -->
+    <section class="cst-cta-band-wrapper" id="contact">
+      <div class="cst-container">
+        <div class="cst-cta-band">
+          <h2 class="cst-cta-heading">
+            Same team, same services — just easier to work with online
+          </h2>
+          <div>
+            <a href="mailto:info@creativesolutiontech.in" class="cst-btn cst-btn-white">
+              Talk to us
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 5. FOOTER (Visit, Talk to us, Follow) -->
+  <footer class="cst-footer">
+    <div class="cst-container">
+      <div class="cst-footer-grid">
+        <!-- Column 1: Visit -->
+        <div>
+          <h3 class="cst-footer-col-title">Visit</h3>
+          <address class="cst-footer-col-text" style="font-style: normal;">
+            Plot No. 3-332, 333, G2, Road No. 17,<br>
+            Ayyappa Society, Mega Hills, Madhapur,<br>
+            Hyderabad, Telangana 500081
+          </address>
+        </div>
+
+        <!-- Column 2: Talk to us -->
+        <div>
+          <h3 class="cst-footer-col-title">Talk to us</h3>
+          <p class="cst-footer-col-text">
+            <a href="tel:+914035032090" class="cst-footer-link">+91 40 3503 2090</a><br>
+            <a href="mailto:info@creativesolutiontech.in" class="cst-footer-link">info@creativesolutiontech.in</a>
+          </p>
+        </div>
+
+        <!-- Column 3: Follow -->
+        <div>
+          <h3 class="cst-footer-col-title">Follow</h3>
+          <p class="cst-footer-col-text">
+            <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" class="cst-footer-link">
+              Facebook
+            </a>
+          </p>
+        </div>
+      </div>
+
+      <!-- Footer Bottom -->
+      <div class="cst-footer-bottom">
+        <div class="cst-copyright">
+          © 2026 Creative Solution Technology. All rights reserved.
+        </div>
+        <div class="cst-token-badge">
+          <span>Hyderabad, India</span>
+          <span>·</span>
+          <span>Madhapur Delivery Center</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
