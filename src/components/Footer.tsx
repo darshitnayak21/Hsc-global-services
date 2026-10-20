@@ -183,26 +183,42 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, className = '' }) =>
                 <div className="flex items-start gap-2.5 text-slate-300">
                   <MapPin className="w-4 h-4 text-[#3183FF] mt-1 shrink-0" aria-hidden="true" />
                   <span className="leading-relaxed">
-                    Plot No - 3-332, 333, G2, Road No. 17, Ayyappa Society, Mega Hills, Madhapur, Hyderabad, Telangana 500081
+                    Plot No 10, Anasuya Nilayam, Flat No 301, Vivekananda Nagar colony, Kukatpally, Hyderabad - 500072, Telangana, India
                   </span>
                 </div>
-                <div className="flex items-center gap-2.5 text-slate-300">
-                  <Phone className="w-4 h-4 text-[#3183FF] shrink-0" aria-hidden="true" />
-                  <a
-                    href="tel:+914035032090"
-                    className="hover:text-white transition-colors font-mono focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3183FF] rounded"
-                  >
-                    +91 40 35032090
-                  </a>
+                <div className="flex items-start gap-2.5 text-slate-300">
+                  <Phone className="w-4 h-4 text-[#3183FF] mt-0.5 shrink-0" aria-hidden="true" />
+                  <div className="space-y-1 font-mono">
+                    <a
+                      href="tel:+917799373334"
+                      className="hover:text-white transition-colors block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3183FF] rounded"
+                    >
+                      +91 7799373334
+                    </a>
+                    <a
+                      href="tel:+914031627399"
+                      className="hover:text-white transition-colors block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3183FF] rounded"
+                    >
+                      +91- 40 31627399
+                    </a>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2.5 text-slate-300">
-                  <Mail className="w-4 h-4 text-[#3183FF] shrink-0" aria-hidden="true" />
-                  <a
-                    href="mailto:info@creativesolutiontech.in"
-                    className="hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3183FF] rounded"
-                  >
-                    info@creativesolutiontech.in
-                  </a>
+                <div className="flex items-start gap-2.5 text-slate-300">
+                  <Mail className="w-4 h-4 text-[#3183FF] mt-0.5 shrink-0" aria-hidden="true" />
+                  <div className="space-y-1">
+                    <a
+                      href="mailto:info@hscglobalserices.com"
+                      className="hover:text-white transition-colors block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3183FF] rounded"
+                    >
+                      info@hscglobalserices.com
+                    </a>
+                    <a
+                      href="mailto:hscglobalenterprises5@gmail.com"
+                      className="hover:text-white transition-colors block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3183FF] rounded"
+                    >
+                      hscglobalenterprises5@gmail.com
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
@@ -273,7 +289,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, className = '' }) =>
 
           <div className="flex items-center gap-6">
             <span className="text-slate-500 hidden md:inline">
-              Madhapur, Hyderabad, Telangana 500081
+              Kukatpally, Hyderabad - 500072
             </span>
             <button
               onClick={scrollToTop}

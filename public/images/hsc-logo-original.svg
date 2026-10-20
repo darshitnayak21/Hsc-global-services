@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 145" fill="none" className="hsc-logo-full">
+  <defs>
+    <!-- Deep Navy to Vibrant Blue Gradient for Globe -->
+    <linearGradient id="fgGlobeGrad" x1="20" y1="20" x2="130" y2="130" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#00B4D8" />
+      <stop offset="50%" stop-color="#0077B6" />
+      <stop offset="100%" stop-color="#023E8A" />
+    </linearGradient>
+
+    <!-- Vibrant Orbit Swoosh Gradient -->
+    <linearGradient id="fgOrbitGrad" x1="10" y1="120" x2="140" y2="40" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0077B6" />
+      <stop offset="35%" stop-color="#0096C7" />
+      <stop offset="70%" stop-color="#00B4D8" />
+      <stop offset="100%" stop-color="#023E8A" />
+    </linearGradient>
+
+    <!-- Center Leader Gradient -->
+    <linearGradient id="fgLeaderGrad" x1="45" y1="50" x2="90" y2="110" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0A2E6B" />
+      <stop offset="100%" stop-color="#041B44" />
+    </linearGradient>
+
+    <!-- Cyan Necktie Gradient -->
+    <linearGradient id="fgTieGrad" x1="68" y1="75" x2="76" y2="105" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#00D2FF" />
+      <stop offset="100%" stop-color="#0077B6" />
+    </linearGradient>
+
+    <!-- Side Team Members Gradient -->
+    <linearGradient id="fgTeamGrad" x1="30" y1="60" x2="105" y2="110" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0096C7" />
+      <stop offset="100%" stop-color="#00589B" />
+    </linearGradient>
+
+    <!-- Gradient for letter 'S' in HSC -->
+    <linearGradient id="fgLetterSGrad" x1="205" y1="25" x2="255" y2="75" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#00B4D8" />
+      <stop offset="100%" stop-color="#023E8A" />
+    </linearGradient>
+  </defs>
+
+  <!-- ==================== LEFT ICON EMBLEM ==================== -->
+  <g transform="translate(6, 12)">
+    <!-- Globe Inner White Disc (Ensures perfect visibility and contrast on dark backgrounds) -->
+    <circle cx="70" cy="61" r="41.5" fill="#FFFFFF" />
+
+    <!-- Globe Outer Circle Ring -->
+    <circle cx="70" cy="61" r="42" stroke="url(#fgGlobeGrad)" stroke-width="3" />
+
+    <!-- Globe Longitude Curves -->
+    <path d="M 70 19 C 49 33, 49 89, 70 103" stroke="url(#fgGlobeGrad)" stroke-width="1.8" fill="none" opacity="0.85" />
+    <path d="M 70 19 C 91 33, 91 89, 70 103" stroke="url(#fgGlobeGrad)" stroke-width="1.8" fill="none" opacity="0.85" />
+
+    <!-- Globe Latitude Curves -->
+    <path d="M 41 40 C 55 49, 85 49, 99 40" stroke="url(#fgGlobeGrad)" stroke-width="1.8" fill="none" opacity="0.85" />
+    <path d="M 42 84 C 55 75, 85 75, 98 84" stroke="url(#fgGlobeGrad)" stroke-width="1.8" fill="none" opacity="0.7" />
+
+    <!-- LEFT TEAM MEMBER -->
+    <circle cx="45" cy="56" r="9" fill="url(#fgTeamGrad)" />
+    <path d="M 33 89 C 33 74, 40 67, 46 66 C 51 67, 56 71, 57 78 C 49 83, 40 86, 33 89 Z" fill="url(#fgTeamGrad)" />
+
+    <!-- RIGHT TEAM MEMBER -->
+    <circle cx="95" cy="56" r="9" fill="url(#fgTeamGrad)" />
+    <path d="M 107 89 C 107 74, 100 67, 94 66 C 89 67, 84 71, 83 78 C 91 83, 100 86, 107 89 Z" fill="url(#fgTeamGrad)" />
+
+    <!-- CENTER EXECUTIVE LEADER (Navy Suit, White Collar, Cyan Tie) -->
+    <circle cx="70" cy="47" r="11.5" fill="url(#fgLeaderGrad)" />
+    <path d="M 50 101 C 50 78, 58 70, 65 68 L 70 76 L 75 68 C 82 70, 90 78, 90 101 C 78 106, 62 106, 50 101 Z" fill="url(#fgLeaderGrad)" />
+    <!-- Crisp White Collar -->
+    <path d="M 66 68 L 74 68 L 70 75 Z" fill="#FFFFFF" opacity="0.98" />
+    <!-- Cyan Necktie -->
+    <polygon points="68,70 72,70 73,74 70,76 67,74" fill="url(#fgTieGrad)" />
+    <polygon points="69,74 71,74 72,90 70,95 68,90" fill="url(#fgTieGrad)" />
+
+    <!-- 3D ORBIT SWOOSH (Wrapping around the globe) -->
+    <path d="M 20 81 C 13 92, 23 104, 45 105 C 72 106, 105 92, 119 71 C 125 61, 125 50, 116 43 C 111 39, 105 37, 98 38 C 95 38.5, 107 34, 116 39 C 129 44, 134 60, 125 74 C 109 98, 71 113, 37 111 C 15 109, 4 95, 11 78 C 14 72, 18 68, 24 64 C 20 69, 18 74, 20 81 Z" fill="url(#fgOrbitGrad)" />
+    <path d="M 84 48 C 99 42, 114 34, 126 29 L 128 33 C 116 38, 101 46, 86 52 Z" fill="url(#fgOrbitGrad)" />
+    <!-- Satellite Node -->
+    <circle cx="130" cy="30" r="6.8" fill="url(#fgLeaderGrad)" />
+  </g>
+
+  <!-- ==================== RIGHT TYPOGRAPHY ==================== -->
+  <!-- HSC Bold Distinctive Acronym -->
+  <text x="160" y="74" font-family="'Montserrat', 'Inter', -apple-system, sans-serif" font-size="58" font-weight="900" letter-spacing="3" fill="#0A2E6B">
+    H<tspan fill="url(#fgLetterSGrad)">S</tspan>C
+  </text>
+
+  <!-- GLOBAL SERVICES (All-caps with wide tracking) -->
+  <text x="162" y="102" font-family="'Jost', 'Montserrat', 'Inter', sans-serif" font-size="19" font-weight="700" letter-spacing="4.5" fill="#0A2E6B">
+    GLOBAL SERVICES
+  </text>
+
+  <!-- Tagline: — Connecting Talent with Opportunity — -->
+  <!-- Left accent line -->
+  <line x1="162" y1="122" x2="184" y2="122" stroke="#00B4D8" stroke-width="2" stroke-linecap="round" />
+  <!-- Text -->
+  <text x="192" y="126" font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif" font-size="11.5" font-weight="500" fill="#0A2E6B" letter-spacing="0.3">
+    Connecting Talent with Opportunity
+  </text>
+  <!-- Right accent line -->
+  <line x1="416" y1="122" x2="438" y2="122" stroke="#00B4D8" stroke-width="2" stroke-linecap="round" />
+</svg>

@@ -29,7 +29,7 @@ export const CtaSection: React.FC<CtaSectionProps> = ({
             <div className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 rounded-[30px] bg-white/10 border border-white/15">
               <span className="w-2 h-2 rounded-full bg-[#00F39C]" />
               <span className="text-xs font-mono uppercase tracking-widest text-slate-300">
-                Hscgolbalservices · Madhapur, Hyderabad
+                HSC Global Services · Kukatpally, Hyderabad
               </span>
             </div>
 
@@ -67,24 +67,24 @@ export const CtaSection: React.FC<CtaSectionProps> = ({
             {/* Verified Contact Bar */}
             <div className="mt-12 pt-8 border-t border-white/10 flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-xs text-slate-400">
               <a
-                href="tel:+914035032090"
+                href="tel:+917799373334"
                 className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors"
               >
                 <Phone className="w-4 h-4 text-[#3183FF]" aria-hidden="true" />
-                <span className="font-mono">+91 40 35032090</span>
+                <span className="font-mono">+91 7799373334</span>
               </a>
 
               <a
-                href="mailto:info@creativesolutiontech.in"
+                href="mailto:info@hscglobalserices.com"
                 className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors"
               >
                 <Mail className="w-4 h-4 text-[#3183FF]" aria-hidden="true" />
-                <span>info@creativesolutiontech.in</span>
+                <span>info@hscglobalserices.com</span>
               </a>
 
               <div className="flex items-center gap-2 text-slate-400">
                 <MapPin className="w-4 h-4 text-[#3183FF]" aria-hidden="true" />
-                <span>Madhapur, Hyderabad 500081</span>
+                <span>Kukatpally, Hyderabad 500072</span>
               </div>
             </div>
           </div>

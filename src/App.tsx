@@ -1,6 +1,8 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { DarkHeader, PageId, ColorTheme } from './components/DarkHeader';
 import { DarkFooter } from './components/DarkFooter';
+import { IntroScreen } from './components/IntroScreen';
 
 const HomePage = lazy(() => import('./pages/HomePage').then((m) => ({ default: m.HomePage })));
 const AboutPage = lazy(() => import('./pages/AboutPage').then((m) => ({ default: m.AboutPage })));
@@ -36,11 +38,66 @@ const getPageFromLocation = (): PageId => {
   return 'home';
 };
 
+// Active session cache key for intro video (updated to ensure freshly uploaded video plays)
+const ACTIVE_INTRO_SESSION_KEY = 'hsc_intro_video_v20261020_session';
+
+// Purge old video caching from localStorage and sessionStorage so previous visitors see the newly uploaded intro video
+const purgeLegacyVideoCache = () => {
+  try {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('hsc_intro_video_viewed');
+      sessionStorage.removeItem('hsc_intro_video_viewed');
+      localStorage.removeItem('hsc_intro_viewed');
+      sessionStorage.removeItem('hsc_intro_viewed');
+      localStorage.removeItem('hsc_intro_video_v1');
+      sessionStorage.removeItem('hsc_intro_video_v1');
+    }
+  } catch {
+    // Ignore in restricted environments
+  }
+};
+
+purgeLegacyVideoCache();
+
+const hasUserSeenIntro = (): boolean => {
+  try {
+    // Allow manual replay with URL param ?replay=true or ?intro=true for testing
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('replay') === 'true' || params.get('intro') === 'true') {
+      return false;
+    }
+    // Only check current active session, legacy localStorage persistent caching removed
+    return sessionStorage.getItem(ACTIVE_INTRO_SESSION_KEY) === 'true';
+  } catch {
+    return false;
+  }
+};
+
+const markIntroAsViewed = () => {
+  try {
+    sessionStorage.setItem(ACTIVE_INTRO_SESSION_KEY, 'true');
+    // Ensure legacy cache keys remain cleared
+    localStorage.removeItem('hsc_intro_video_viewed');
+  } catch {
+    // Ignore storage quota or restricted environment errors
+  }
+};
+
 export default function App() {
   const [activePage, setActivePage] = useState<PageId>(getPageFromLocation);
   const [colorTheme, setColorTheme] = useState<ColorTheme>('cyan-emerald');
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [showIntro, setShowIntro] = useState<boolean>(() => !hasUserSeenIntro());
+
+  const handleIntroComplete = () => {
+    markIntroAsViewed();
+    setShowIntro(false);
+  };
+
+  const handleReplayIntro = () => {
+    setShowIntro(true);
+  };
 
   // Sync with browser URL (popstate and hashchange)
   useEffect(() => {
@@ -101,17 +158,22 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#030712] text-slate-100 font-['Inter'] selection:bg-cyan-500 selection:text-black relative flex flex-col antialiased">
-      {/* Ambient Lighting Spots (Spectralsoft Visual Language) */}
+    <div className="min-h-screen bg-gradient-to-b from-[#030712] via-[#071A2B] to-[#030712] text-white font-['Inter'] selection:bg-[#00D9F5] selection:text-[#030712] relative flex flex-col antialiased">
+      {/* Separate introductory screen (plays only on first visit, cached on refresh) */}
+      {showIntro && (
+        <IntroScreen onFinish={handleIntroComplete} />
+      )}
+
+      {/* Ambient Cyan and Emerald Lighting */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute -top-[10%] left-1/2 -translate-x-1/2 w-[600px] md:w-[900px] h-[400px] rounded-full bg-cyan-500/10 blur-[140px]" />
-        <div className="absolute top-[20%] -left-[10%] w-[500px] h-[500px] rounded-full bg-emerald-500/10 blur-[140px]" />
-        <div className="absolute top-[40%] -right-[10%] w-[500px] h-[500px] rounded-full bg-blue-500/10 blur-[150px]" />
-        <div className="absolute bottom-[10%] left-1/3 w-[600px] h-[400px] rounded-full bg-teal-500/10 blur-[150px]" />
-        <div className="absolute inset-0 bg-grid-mesh opacity-50" />
+        <div className="absolute -top-[10%] left-1/2 -translate-x-1/2 w-[600px] md:w-[900px] h-[400px] rounded-full bg-[#00D9F5]/10 blur-[140px]" />
+        <div className="absolute top-[20%] -left-[10%] w-[500px] h-[500px] rounded-full bg-[#35DDB5]/8 blur-[140px]" />
+        <div className="absolute top-[40%] -right-[10%] w-[500px] h-[500px] rounded-full bg-[#00D9F5]/8 blur-[150px]" />
+        <div className="absolute bottom-[10%] left-1/3 w-[600px] h-[400px] rounded-full bg-[#35DDB5]/6 blur-[150px]" />
+        <div className="absolute inset-0 bg-grid-mesh opacity-60" />
       </div>
 
-      {/* Global Clean White Header across all pages */}
+      {/* Global Clean Warm Header across all pages */}
       <DarkHeader
         activePage={activePage}
         onNavigate={handleNavigate}
@@ -120,54 +182,64 @@ export default function App() {
         onChangeColorTheme={handleThemeChange}
       />
 
-      {/* Floating Status Toast */}
+      {/* Floating Status Toast - Warm Porcelain Style */}
       {toastMessage && (
         <div
           role="status"
           aria-live="polite"
-          className="fixed bottom-6 right-6 z-50 bg-slate-900/95 text-white px-5 py-3.5 rounded-full shadow-2xl flex items-center gap-3 text-sm animate-in slide-in-from-bottom-3 duration-300 border border-cyan-500/40 backdrop-blur-md"
+          className="fixed bottom-6 right-6 z-50 bg-white/95 text-slate-900 px-5 py-3.5 rounded-full shadow-2xl flex items-center gap-3 text-sm animate-in slide-in-from-bottom-3 duration-300 border border-rose-300 backdrop-blur-md"
         >
-          <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping" />
-          <span className="font-medium text-slate-100">{toastMessage}</span>
+          <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping" />
+          <span className="font-semibold text-slate-900">{toastMessage}</span>
         </div>
       )}
 
       {/* Dedicated Multi-Page View Container */}
       <main className="flex-1 relative z-10" id="main-content">
         <Suspense fallback={<div className="min-h-[60vh] bg-[#030712]" aria-hidden="true" />}>
-          {activePage === 'home' && (
-            <HomePage
-              onNavigate={handleNavigate}
-              onGetInTouch={() => setIsConsultationOpen(true)}
-            />
-          )}
-          {activePage === 'about' && (
-            <AboutPage
-              onNavigate={handleNavigate}
-              onGetInTouch={() => setIsConsultationOpen(true)}
-            />
-          )}
-          {activePage === 'services' && (
-            <ServicesPage
-              onNavigate={handleNavigate}
-              onGetInTouch={() => setIsConsultationOpen(true)}
-            />
-          )}
-          {activePage === 'careers' && (
-            <CareersPage
-              onNavigate={handleNavigate}
-              onGetInTouch={() => setIsConsultationOpen(true)}
-            />
-          )}
-          {activePage === 'clients' && (
-            <ClientsPage
-              onNavigate={handleNavigate}
-              onGetInTouch={() => setIsConsultationOpen(true)}
-            />
-          )}
-          {activePage === 'contact' && (
-            <ContactPage onNavigate={handleNavigate} />
-          )}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activePage}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            >
+              {activePage === 'home' && (
+                <HomePage
+                  onNavigate={handleNavigate}
+                  onGetInTouch={() => setIsConsultationOpen(true)}
+                />
+              )}
+              {activePage === 'about' && (
+                <AboutPage
+                  onNavigate={handleNavigate}
+                  onGetInTouch={() => setIsConsultationOpen(true)}
+                />
+              )}
+              {activePage === 'services' && (
+                <ServicesPage
+                  onNavigate={handleNavigate}
+                  onGetInTouch={() => setIsConsultationOpen(true)}
+                />
+              )}
+              {activePage === 'careers' && (
+                <CareersPage
+                  onNavigate={handleNavigate}
+                  onGetInTouch={() => setIsConsultationOpen(true)}
+                />
+              )}
+              {activePage === 'clients' && (
+                <ClientsPage
+                  onNavigate={handleNavigate}
+                  onGetInTouch={() => setIsConsultationOpen(true)}
+                />
+              )}
+              {activePage === 'contact' && (
+                <ContactPage onNavigate={handleNavigate} />
+              )}
+            </motion.div>
+          </AnimatePresence>
         </Suspense>
       </main>
 
@@ -175,6 +247,7 @@ export default function App() {
       <DarkFooter
         onNavigate={handleNavigate}
         onContactClick={() => setIsConsultationOpen(true)}
+        onReplayIntro={handleReplayIntro}
       />
 
       {/* Interactive Global Consultation Modal (loaded only when opened) */}

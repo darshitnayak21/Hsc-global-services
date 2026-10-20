@@ -52,9 +52,32 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   ];
 
   return (
-    <footer className="bg-slate-950 border-t border-slate-800 text-slate-400 text-sm">
+    <footer className="relative isolate overflow-hidden bg-slate-950 border-t border-slate-800 text-slate-400 text-sm">
+      {/* HSC watermark: inline styles ensure visibility even if Tailwind classes are purged */}
+      <span
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          right: '4%',
+          top: '48%',
+          transform: 'translateY(-50%)',
+          zIndex: 1,
+          pointerEvents: 'none',
+          userSelect: 'none',
+          whiteSpace: 'nowrap',
+          fontSize: 'clamp(150px, 22vw, 300px)',
+          fontWeight: 900,
+          lineHeight: 1,
+          letterSpacing: '-0.06em',
+          color: '#FFFFFF',
+          opacity: 0.18,
+        }}
+      >
+        HSC
+      </span>
+
       {/* Main Footer Directory */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8">
           {/* Column 1: Brand & Contact Info (span 4) */}
           <div className="lg:col-span-4 space-y-5">
@@ -67,20 +90,30 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               <div className="flex items-start gap-3 text-slate-300">
                 <MapPin className="w-4 h-4 text-blue-400 mt-1 shrink-0" />
                 <span className="leading-snug">
-                  Plot No - 3-332, 333, G2, Road No. 17, Ayyappa Society, Mega Hills, Madhapur, Hyderabad, Telangana 500081
+                  Plot No 10, Anasuya Nilayam, Flat No 301, Vivekananda Nagar colony, Kukatpally, Hyderabad - 500072, Telangana, India
                 </span>
               </div>
-              <div className="flex items-center gap-3 text-slate-300">
-                <Phone className="w-4 h-4 text-blue-400 shrink-0" />
-                <a href="tel:+914035032090" className="hover:text-blue-400 transition-colors">
-                  +91 40 35032090
-                </a>
+              <div className="flex items-start gap-3 text-slate-300">
+                <Phone className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <a href="tel:+917799373334" className="hover:text-blue-400 transition-colors block">
+                    +91 7799373334
+                  </a>
+                  <a href="tel:+914031627399" className="hover:text-blue-400 transition-colors block">
+                    +91- 40 31627399
+                  </a>
+                </div>
               </div>
-              <div className="flex items-center gap-3 text-slate-300">
-                <Mail className="w-4 h-4 text-blue-400 shrink-0" />
-                <a href="mailto:info@creativesolutiontech.in" className="hover:text-blue-400 transition-colors">
-                  info@creativesolutiontech.in
-                </a>
+              <div className="flex items-start gap-3 text-slate-300">
+                <Mail className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <a href="mailto:info@hscglobalserices.com" className="hover:text-blue-400 transition-colors block">
+                    info@hscglobalserices.com
+                  </a>
+                  <a href="mailto:hscglobalenterprises5@gmail.com" className="hover:text-blue-400 transition-colors block">
+                    hscglobalenterprises5@gmail.com
+                  </a>
+                </div>
               </div>
             </div>
           </div>
@@ -210,7 +243,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
       </div>
 
       {/* Bottom Sub-Bar */}
-      <div className="border-t border-slate-800/80 bg-slate-950/80">
+      <div className="relative z-10 border-t border-slate-800/80 bg-slate-950/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
           <p className="text-slate-400 text-center sm:text-left">
             © {new Date().getFullYear()} Hscgolbalservices. All rights reserved.

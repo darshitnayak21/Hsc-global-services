@@ -51,14 +51,14 @@ export const TechBackgroundAnimation: React.FC<TechBackgroundAnimationProps> = (
       const particleCount = isMobile ? 36 : 64;
       particles = [];
 
-      // High-tech enterprise constellation palette
+      // High-tech enterprise constellation palette - Emerald and Teal
       const palette = [
-        { color: 'rgba(56, 189, 248, ', glow: '#38bdf8' }, // Vivid Sky Cyan
-        { color: 'rgba(129, 140, 248, ', glow: '#818cf8' }, // Soft Indigo
-        { color: 'rgba(45, 212, 191, ', glow: '#2dd4bf' }, // Neon Teal
-        { color: 'rgba(96, 165, 250, ', glow: '#60a5fa' }, // Electric Blue
-        { color: 'rgba(192, 132, 252, ', glow: '#c084fc' }, // Soft Violet
-        { color: 'rgba(6, 182, 212, ', glow: '#06b6d4' }, // Pure Cyan
+        { color: 'rgba(45, 212, 191, ', glow: '#2dd4bf' }, // Neon Teal (#2DD4BF)
+        { color: 'rgba(16, 185, 129, ', glow: '#10b981' }, // Vibrant Emerald (#10B981)
+        { color: 'rgba(110, 231, 183, ', glow: '#6ee7b7' }, // Soft Mint
+        { color: 'rgba(20, 184, 166, ', glow: '#14b8a6' }, // Deep Teal
+        { color: 'rgba(52, 211, 153, ', glow: '#34d399' }, // Light Emerald
+        { color: 'rgba(167, 243, 208, ', glow: '#a7f3d0' }, // Pale Seafoam
       ];
 
       for (let i = 0; i < particleCount; i++) {
@@ -234,8 +234,8 @@ export const TechBackgroundAnimation: React.FC<TechBackgroundAnimationProps> = (
 
           if (dist < maxDistance) {
             connections++;
-            const lineAlpha = (1 - dist / maxDistance) * 0.4 * p.alpha;
-            ctx.strokeStyle = `rgba(56, 189, 248, ${lineAlpha})`;
+            const lineAlpha = (1 - dist / maxDistance) * 0.42 * p.alpha;
+            ctx.strokeStyle = `rgba(45, 212, 191, ${lineAlpha})`;
             ctx.lineWidth = 1.1;
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
@@ -273,51 +273,51 @@ export const TechBackgroundAnimation: React.FC<TechBackgroundAnimationProps> = (
 
   return (
     <div className={`absolute inset-0 overflow-hidden pointer-events-none select-none ${className}`}>
-      {/* Layer 1: Deep Navy / Midnight Digital Foundation */}
-      <div className="absolute inset-0 bg-[#030712]" />
+      {/* Layer 1: Deep Forest Green Digital Foundation (#071E1B) */}
+      <div className="absolute inset-0 bg-[#071E1B]" />
 
-      {/* Layer 1.5: Distinct Cyber Circuit Grid & Dot Matrix Pattern */}
+      {/* Layer 1.5: Subtle Cyber Circuit Grid & Dot Matrix Pattern in Teal/Emerald */}
       <div
-        className="absolute inset-0 opacity-[0.09]"
+        className="absolute inset-0 opacity-[0.08]"
         style={{
           backgroundImage: `
-            linear-gradient(to right, rgba(56, 189, 248, 0.3) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(56, 189, 248, 0.3) 1px, transparent 1px)
+            linear-gradient(to right, rgba(45, 212, 191, 0.25) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(45, 212, 191, 0.25) 1px, transparent 1px)
           `,
           backgroundSize: '44px 44px',
         }}
       />
       <div
-        className="absolute inset-0 opacity-[0.12]"
+        className="absolute inset-0 opacity-[0.10]"
         style={{
-          backgroundImage: `radial-gradient(rgba(56, 189, 248, 0.6) 1.5px, transparent 1.5px)`,
+          backgroundImage: `radial-gradient(rgba(16, 185, 129, 0.45) 1.5px, transparent 1.5px)`,
           backgroundSize: '22px 22px',
         }}
       />
 
-      {/* Layer 2: Radiant Digital Ambient Glow Orbs (Electric Blue, Cyan, Purple) */}
+      {/* Layer 2: Subtle Forest-Green Ambient Glow Orbs (#10342E, Emerald, Teal) */}
       <div className="absolute inset-0 overflow-hidden">
         <div
-          className="absolute -top-[12%] left-[8%] w-[680px] h-[480px] rounded-full bg-cyan-500/25 blur-[120px] animate-pulse"
+          className="absolute -top-[12%] left-[8%] w-[680px] h-[480px] rounded-full bg-[#10342E] blur-[120px] animate-pulse"
           style={{ animationDuration: '7s' }}
         />
         <div
-          className="absolute top-[20%] right-[3%] w-[720px] h-[520px] rounded-full bg-indigo-600/28 blur-[130px] animate-pulse"
+          className="absolute top-[20%] right-[3%] w-[720px] h-[520px] rounded-full bg-[#10B981]/18 blur-[130px] animate-pulse"
           style={{ animationDuration: '9s' }}
         />
         <div
-          className="absolute -bottom-[8%] left-[28%] w-[650px] h-[420px] rounded-full bg-blue-600/25 blur-[120px] animate-pulse"
+          className="absolute -bottom-[8%] left-[28%] w-[650px] h-[420px] rounded-full bg-[#2DD4BF]/14 blur-[120px] animate-pulse"
           style={{ animationDuration: '8s' }}
         />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/30 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#10342E]/70 via-transparent to-transparent" />
       </div>
 
       {/* Layer 3: Active Hardware-Accelerated Canvas for Floating Constellation Mesh & Glowing Particles */}
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block" />
 
-      {/* Layer 4: Refined Readability Vignette (Allows edge-to-edge animation vibrancy while keeping center text crystal clear) */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(3,7,18,0.3)_0%,_rgba(3,7,18,0.1)_45%,_rgba(3,7,18,0.55)_100%)]" />
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#030712]/95" />
+      {/* Layer 4: Refined Readability Vignette (Fades smoothly to #071E1B) */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(7,30,27,0.25)_0%,_rgba(7,30,27,0.1)_45%,_rgba(7,30,27,0.65)_100%)]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#071E1B]/95" />
     </div>
   );
 };

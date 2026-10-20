@@ -175,8 +175,8 @@ export const Hero: React.FC<HeroProps> = ({
               </div>
 
               <div className="mt-5 pt-4 border-t border-slate-800 flex items-center justify-between text-xs font-mono text-slate-400">
-                <span>Madhapur, Hyderabad 500081</span>
-                <span className="text-[#007bff]">+91 40 35032090</span>
+                <span>Kukatpally, Hyderabad 500072</span>
+                <span className="text-[#007bff]">+91 7799373334</span>
               </div>
             </div>
           </div>

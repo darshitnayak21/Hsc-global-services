@@ -38,10 +38,10 @@ export const SubtleAmbientWaves: React.FC<SubtleAmbientWavesProps> = ({ classNam
       const count = Math.min(Math.floor(w / 45), 32);
       particles = [];
       const colors = [
-        'rgba(6, 182, 212, ',   // cyan-500
-        'rgba(56, 189, 248, ',  // sky-400
-        'rgba(14, 165, 233, ',  // sky-500
-        'rgba(45, 212, 191, ',  // teal-400
+        'rgba(244, 63, 94, ',   // rose-500
+        'rgba(245, 158, 11, ',  // amber-500
+        'rgba(251, 146, 60, ',  // orange-400
+        'rgba(255, 183, 142, ', // warm peach
       ];
 
       for (let i = 0; i < count; i++) {
@@ -163,37 +163,37 @@ export const SubtleAmbientWaves: React.FC<SubtleAmbientWavesProps> = ({ classNam
       step += 0.005; // Very slow, calm evolution
       ctx.clearRect(0, 0, width, height);
 
-      // Wave Layer 1: Ambient deep cyan wave
+      // Wave Layer 1: Ambient soft blush coral wave
       drawWave(
         0.35,
         48,
         width * 0.65,
         0.4,
         0,
-        'rgba(6, 182, 212, 0.12)',
-        ['rgba(6, 182, 212, 0.045)', 'rgba(6, 182, 212, 0.002)']
+        'rgba(255, 209, 193, 0.35)',
+        ['rgba(255, 209, 193, 0.15)', 'rgba(255, 209, 193, 0.01)']
       );
 
-      // Wave Layer 2: Subtle soft electric blue secondary wave
+      // Wave Layer 2: Subtle soft peach secondary wave
       drawWave(
         0.6,
         40,
         width * 0.5,
         -0.35,
         Math.PI / 3,
-        'rgba(14, 165, 233, 0.10)',
-        ['rgba(14, 165, 233, 0.038)', 'rgba(14, 165, 233, 0.002)']
+        'rgba(255, 229, 180, 0.40)',
+        ['rgba(255, 229, 180, 0.18)', 'rgba(255, 229, 180, 0.01)']
       );
 
-      // Wave Layer 3: Gentle low teal crest
+      // Wave Layer 3: Gentle low rose crest
       drawWave(
         0.8,
         32,
         width * 0.45,
         0.3,
         Math.PI / 1.7,
-        'rgba(45, 212, 191, 0.08)',
-        ['rgba(45, 212, 191, 0.03)', 'rgba(45, 212, 191, 0.001)']
+        'rgba(244, 63, 94, 0.15)',
+        ['rgba(244, 63, 94, 0.04)', 'rgba(244, 63, 94, 0.001)']
       );
 
       // Draw and update micro-particles

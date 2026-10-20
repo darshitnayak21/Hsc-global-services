@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { PageId } from '../components/DarkHeader';
 import { SubtleAmbientWaves } from '../components/SubtleAmbientWaves';
@@ -8,42 +9,53 @@ import {
   ServiceCategoryId,
   CSTService,
 } from '../data/servicesData';
+import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import {
-  Globe,
-  TrendingUp,
-  Users,
-  Cpu,
-  Search,
-  Server,
-  Code2,
-  CheckCircle2,
-  ArrowRight,
-  Sparkles,
-  Zap,
-  ShieldCheck,
-  Layers,
-  Calculator,
-  X,
-} from 'lucide-react';
+  MotionReveal,
+  StaggerContainer,
+  StaggerItem,
+  InteractiveCard,
+  FloatingElement,
+  motion,
+  AnimatePresence,
+} from '../components/MotionTransitions';
+
+const getServiceMetric = (id: string): string => {
+  switch (id) {
+    case 'it-recruitment':
+      return 'PRE-VETTED TALENT';
+    case 'staffing':
+      return 'FLEXIBLE CAPACITY';
+    case 'training-placement':
+      return 'CAREER READINESS';
+    case 'cyber-security':
+      return 'ZERO-TRUST SECURITY';
+    case 'software-development':
+      return 'HIGH-TEMPO SPRINTS';
+    case 'mobile-development':
+      return 'CROSS-PLATFORM';
+    case 'cloud-services':
+      return '99.99% UPTIME SLA';
+    case 'sap-services':
+      return 'ENTERPRISE ERP';
+    default:
+      return 'ENTERPRISE GRADE';
+  }
+};
 
 interface ServicesPageProps {
   onNavigate: (page: PageId) => void;
   onGetInTouch: () => void;
 }
 
-export const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate, onGetInTouch }) => {
-  const [filterCategory, setFilterCategory] = useState<ServiceCategoryId>('all');
-  const [selectedService, setSelectedService] = useState<CSTService | null>(null);
-  
-  // Interactive Project Estimator state
-  const [estimatorScope, setEstimatorScope] = useState<'mvp' | 'enterprise' | 'staffing'>('enterprise');
-  const [selectedAddons, setSelectedAddons] = useState<string[]>(['seo', 'cloud']);
-
-  const toggleAddon = (id: string) => {
-    setSelectedAddons((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    );
-  };
+export const ServicesPage: React.FC<ServicesPageProps> = ({
+  onNavigate,
+  onGetInTouch,
+}) => {
+  const [filterCategory, setFilterCategory] =
+    useState<ServiceCategoryId>('all');
+  const [selectedService, setSelectedService] =
+    useState<CSTService | null>(null);
 
   const filteredServices = CST_SERVICES.filter((s) => {
     if (filterCategory === 'all') return true;
@@ -52,219 +64,209 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate, onGetInT
 
   return (
     <div className="relative z-10 py-16 sm:py-24 overflow-hidden">
-      {/* Subtle blue/cyan ambient light waves and floating micro-particles behind cards */}
       <SubtleAmbientWaves />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 sm:space-y-24">
-        {/* Page Hero Header */}
-        <div className="text-center max-w-3xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-950/60 border border-cyan-800/50 text-cyan-300 text-xs sm:text-sm font-mono uppercase tracking-wider font-semibold">
-            Enterprise Services
-          </div>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white tracking-tight leading-tight">
-            Providing the best{' '}
-            <span className="text-cyan-400">
-              IT solutions &amp; Services
-            </span>
-          </h1>
-          <p className="text-base sm:text-lg md:text-xl text-slate-300 leading-relaxed font-normal">
-            From modern web engineering and dedicated staffing to data-driven marketing, we build and manage technical solutions that deliver measurable enterprise outcomes.
-          </p>
-
-          {/* Category Filter Pills */}
-          <div className="flex flex-wrap justify-center gap-2.5 pt-4">
-            {SERVICE_CATEGORIES.map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => setFilterCategory(cat.id)}
-                className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 ${
-                  filterCategory === cat.id
-                    ? 'bg-gradient-to-r from-cyan-400 via-teal-400 to-emerald-300 text-slate-950 font-bold shadow-lg shadow-cyan-500/25'
-                    : 'bg-slate-900/80 text-slate-300 hover:text-white hover:bg-slate-800 border border-slate-800'
-                }`}
-              >
-                {cat.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Editorial Technology Service Cards Grid (Desktop: 3 per row, Tablet: 2 per row, Mobile: 1 per row) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7 lg:gap-8 items-stretch">
-          {filteredServices.map((service) => (
-            <div
-              key={service.id}
-              className="group relative rounded-[26px] border border-slate-900/85 p-[3px] bg-white transition-all duration-300 ease-out hover:-translate-y-1 hover:border-slate-950 hover:shadow-[0_12px_28px_-8px_rgba(0,0,0,0.14)] flex flex-col"
-            >
-              {/* Concentric Inner Border creating the refined double-line border */}
-              <div className="rounded-[22px] border border-slate-900/75 bg-white p-8 sm:p-10 lg:p-11 flex flex-col justify-between h-full min-h-[400px] sm:min-h-[440px] transition-colors duration-300 group-hover:border-slate-950">
-                {/* Service Heading & Concise Description with generous whitespace */}
-                <div className="pt-4 sm:pt-6">
-                  <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-950 tracking-tight leading-snug group-hover:text-cyan-900 transition-colors duration-300">
-                    {service.title}
-                  </h3>
-                  <p className="mt-5 text-slate-600 text-sm sm:text-base leading-relaxed font-normal">
-                    {service.description}
-                  </p>
-                </div>
-
-                {/* One "Learn More →" Pill Action Button */}
-                <div className="pt-8 sm:pt-10 mt-auto">
-                  <button
-                    onClick={() => setSelectedService(service)}
-                    className="inline-flex items-center justify-between rounded-full border border-slate-900 bg-white px-5 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-extrabold uppercase tracking-wider text-slate-950 transition-colors duration-300 hover:bg-slate-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
-                  >
-                    <span>Learn More</span>
-                    <span className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#FF4500] text-white flex items-center justify-center ml-3.5 transition-transform duration-300 ease-out group-hover:translate-x-1 shrink-0 shadow-sm">
-                      <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                    </span>
-                  </button>
-                </div>
+        {/* Services Hero */}
+        <MotionReveal duration={0.7} distance={20} blur>
+          <div className="text-center max-w-3xl mx-auto">
+            <FloatingElement distance={4} duration={5} className="inline-block">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-950/60 border border-cyan-800/50 text-cyan-300 text-xs sm:text-sm font-mono uppercase tracking-wider font-semibold mb-5 shadow-sm">
+                <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+                <span>Enterprise Services · Global Delivery</span>
               </div>
-            </div>
-          ))}
-        </div>
+            </FloatingElement>
 
-        {/* Interactive Scope & Engagement Estimator */}
-        <div className="glass-card rounded-2xl p-8 sm:p-10 border border-slate-800 shadow-2xl">
-          <div className="max-w-3xl mb-8 space-y-2">
-            <div className="inline-flex items-center gap-2 text-xs sm:text-sm font-mono text-cyan-400 uppercase tracking-wider font-semibold">
-              <Calculator className="w-4 h-4" />
-              <span>Project Scoping Tool</span>
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
-              Plan Your Engagement Model
-            </h2>
-            <p className="text-slate-300 text-base sm:text-lg leading-relaxed">
-              Select your requirements to discuss estimated timelines and team composition with our Hyderabad delivery center.
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white tracking-tight leading-tight">
+              What We Offer
+            </h1>
+
+            <p className="mt-4 text-base sm:text-lg text-slate-300 leading-relaxed font-normal">
+              Unlock your business potential with our comprehensive technology
+              and enterprise services. HSC Global Services consultants are
+              equipped with the experience and knowledge to guide you in the
+              right direction.
             </p>
+
+            {/* Category Filters with micro-interactions */}
+            <div className="flex flex-wrap justify-center gap-2.5 pt-6">
+              {SERVICE_CATEGORIES.map((cat) => (
+                <motion.button
+                  key={cat.id}
+                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.04 }}
+                  transition={{ duration: 0.2 }}
+                  onClick={() => setFilterCategory(cat.id)}
+                  className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2DD4BF] ${
+                    filterCategory === cat.id
+                      ? 'bg-white text-slate-950 font-bold shadow-lg shadow-white/10'
+                      : 'bg-white/10 text-slate-300 hover:text-white hover:bg-white/15 border border-white/15'
+                  }`}
+                >
+                  {cat.label}
+                </motion.button>
+              ))}
+            </div>
           </div>
+        </MotionReveal>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Scope Selector */}
-            <div className="space-y-4 lg:col-span-2">
-              <span className="text-xs sm:text-sm font-mono text-slate-400 uppercase tracking-wider block font-semibold">
-                1. Select Engagement Objective
-              </span>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                {[
-                  {
-                    id: 'mvp',
-                    title: 'Rapid MVP Build',
-                    subtitle: 'Sprint delivery with modern React and cloud infrastructure.',
-                  },
-                  {
-                    id: 'enterprise',
-                    title: 'Enterprise Solution',
-                    subtitle: 'Custom architecture with automated testing and structured governance.',
-                  },
-                  {
-                    id: 'staffing',
-                    title: 'Dedicated Talent Pod',
-                    subtitle: 'Augment team with senior software engineers from Hyderabad.',
-                  },
-                ].map((s) => (
-                  <button
-                    key={s.id}
-                    onClick={() => setEstimatorScope(s.id as any)}
-                    className={`p-5 rounded-xl border text-left transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 ${
-                      estimatorScope === s.id
-                        ? 'bg-cyan-500/10 border-cyan-400 text-white shadow-lg shadow-cyan-500/10'
-                        : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:border-slate-700'
-                    }`}
-                  >
-                    <div className="font-bold text-base text-white mb-1.5">{s.title}</div>
-                    <div className="text-xs sm:text-sm text-slate-300 leading-relaxed">{s.subtitle}</div>
-                  </button>
-                ))}
-              </div>
+        {/* Service Cards with fluid layout transitions */}
+        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7 lg:gap-8 items-stretch">
+          <AnimatePresence mode="popLayout">
+            {filteredServices.map((service, index) => {
+              const isCenterFeatured = index === 1;
 
-              {/* Addons */}
-              <div className="pt-4 space-y-3">
-                <span className="text-xs sm:text-sm font-mono text-slate-400 uppercase tracking-wider block font-semibold">
-                  2. Select Accelerators &amp; Add-ons
-                </span>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  {[
-                    { id: 'seo', label: 'Technical SEO & Launch Growth' },
-                    { id: 'cloud', label: 'Multi-Cloud DevOps Setup' },
-                    { id: 'qa', label: 'Automated E2E Test Suite' },
-                  ].map((addon) => {
-                    const isChecked = selectedAddons.includes(addon.id);
-                    return (
-                      <button
-                        key={addon.id}
-                        onClick={() => toggleAddon(addon.id)}
-                        className={`p-3.5 rounded-lg border text-sm font-medium flex items-center justify-between transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 ${
-                          isChecked
-                            ? 'bg-emerald-500/10 border-emerald-400 text-emerald-300'
-                            : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:border-slate-700'
-                        }`}
-                      >
-                        <span>{addon.label}</span>
-                        <div
-                          className={`w-4 h-4 rounded border flex items-center justify-center ${
-                            isChecked
-                              ? 'bg-emerald-500 border-emerald-500'
-                              : 'border-slate-700 bg-slate-900'
+              return (
+                <motion.div
+                  key={service.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.94, y: 16 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.94, y: 10 }}
+                  transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
+                  className="h-full"
+                >
+                  <InteractiveCard hoverY={-6} hoverScale={1.015} className="h-full">
+                    <div
+                      className="group relative rounded-[28px] p-7 sm:p-8 flex flex-col justify-between h-full min-h-[460px] bg-slate-900/40 backdrop-blur-xl border border-white/10 hover:border-cyan-400/50 hover:bg-slate-900/60 shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] hover:shadow-[0_20px_50px_rgba(6,182,212,0.15)] transition-all duration-300 overflow-hidden"
+                    >
+                      <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent pointer-events-none" />
+
+                      <div>
+                        <div className="flex items-center justify-between gap-3 mb-6">
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/25 text-cyan-300 text-[11px] font-mono font-bold tracking-wider uppercase">
+                            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                            {getServiceMetric(service.id)}
+                          </span>
+
+                          <span className="text-xs font-mono font-bold text-slate-400 bg-white/[0.04] px-2.5 py-1 rounded-lg border border-white/10">
+                            {String(index + 1).padStart(2, '0')}
+                          </span>
+                        </div>
+
+                        <div className="text-[11px] font-mono font-bold tracking-widest uppercase text-slate-400 mb-2">
+                          {service.categoryLabel}
+                        </div>
+
+                        <h3 className="text-2xl sm:text-[26px] font-bold text-white tracking-tight leading-snug mb-3.5 group-hover:text-cyan-300 transition-colors">
+                          {service.title}
+                        </h3>
+
+                        <p className="text-sm sm:text-[15px] text-slate-300 leading-relaxed font-normal mb-6">
+                          {service.description}
+                        </p>
+
+                        <div className="space-y-2.5 mb-8">
+                          <div className="text-[11px] font-mono uppercase tracking-wider text-slate-400 font-semibold">
+                            Core Capabilities
+                          </div>
+
+                          <div className="flex flex-col gap-2">
+                            {service.capabilities.slice(0, 3).map(
+                              (capability, idx) => (
+                                <div
+                                  key={idx}
+                                  className="flex items-start gap-2.5 p-2 rounded-xl bg-white/[0.03] border border-white/5 group-hover:border-cyan-500/25 group-hover:bg-cyan-950/10 transition-colors text-xs sm:text-[13px] text-slate-200"
+                                >
+                                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 mt-1.5 shrink-0" />
+                                  <span className="leading-snug">
+                                    {capability}
+                                  </span>
+                                </div>
+                              )
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="pt-2 mt-auto">
+                        <button
+                          onClick={() => setSelectedService(service)}
+                          className={`w-full py-3.5 px-6 rounded-full font-bold text-sm sm:text-base flex items-center justify-center gap-2 transition-all duration-300 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 ${
+                            isCenterFeatured
+                              ? 'bg-white hover:bg-slate-100 text-slate-950 shadow-lg shadow-white/10'
+                              : 'bg-white/10 hover:bg-white text-white hover:text-slate-950 border border-white/15 hover:border-white shadow-md'
                           }`}
                         >
-                          {isChecked && <CheckCircle2 className="w-3.5 h-3.5 text-black" />}
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
+                          <span>Get Started</span>
+                          <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+                        </button>
+                      </div>
+                    </div>
+                  </InteractiveCard>
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
+        </motion.div>
 
-            {/* Estimated Summary */}
-            <div className="p-6 sm:p-7 rounded-xl bg-slate-950/80 border border-slate-800 flex flex-col justify-between space-y-6">
-              <div className="space-y-4">
-                <span className="text-xs sm:text-sm font-mono text-cyan-400 uppercase tracking-wider block font-semibold">
-                  Recommended Deployment
-                </span>
-                <div className="space-y-1.5">
-                  <div className="text-2xl font-bold text-white">
-                    {estimatorScope === 'mvp'
-                      ? 'Sprint Delivery'
-                      : estimatorScope === 'staffing'
-                      ? 'Dedicated Pod'
-                      : 'Full Architecture Build'}
-                  </div>
-                  <div className="text-sm text-slate-300 font-mono">
-                    Hyderabad Core Pod: Tech Lead, Fullstack Devs, QA
-                  </div>
-                </div>
+        {/* Business Growth CTA */}
+        <MotionReveal duration={0.8} distance={24}>
+          <section
+            aria-labelledby="services-cta-heading"
+            className="glass-card relative isolate overflow-hidden rounded-[28px] border border-[#00D9F5]/40 bg-gradient-to-r from-[#071A2B] via-[#0B2235] to-[#071A2B] px-6 py-14 sm:px-10 sm:py-20 lg:px-16 lg:py-24 text-center shadow-[0_20px_60px_rgba(0,217,245,0.12)] text-white"
+          >
+            {/* Subtle cross-pattern background */}
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 -z-10 opacity-20"
+              style={{
+                backgroundImage: `
+                  linear-gradient(rgba(0,217,245,0.1) 1px, transparent 1px),
+                  linear-gradient(90deg, rgba(0,217,245,0.1) 1px, transparent 1px)
+                `,
+                backgroundSize: '38px 38px',
+              }}
+            />
 
-                <div className="space-y-2.5 text-sm text-slate-300 pt-2 border-t border-slate-800">
-                  <div className="flex justify-between">
-                    <span>Quality Governance:</span>
-                    <span className="font-mono text-slate-200">Strict Code Review</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Code Ownership:</span>
-                    <span className="font-mono text-slate-200">Full Client IP Ownership</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>NDA Coverage:</span>
-                    <span className="font-mono text-slate-200">Mutual Signed</span>
-                  </div>
-                </div>
-              </div>
+            {/* Soft ambient highlights */}
+            <div
+              aria-hidden="true"
+              className="absolute -top-28 left-1/2 -z-10 h-64 w-64 -translate-x-1/2 rounded-full bg-[#00D9F5]/15 blur-3xl animate-pulse-glow"
+            />
 
-              <button
-                onClick={onGetInTouch}
-                className="w-full py-3.5 rounded-full bg-gradient-to-r from-cyan-400 via-teal-400 to-emerald-300 hover:from-cyan-300 hover:to-emerald-200 text-slate-950 font-bold text-sm sm:text-base shadow-lg shadow-cyan-500/25 transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+            <div className="relative mx-auto max-w-4xl">
+              <p className="mb-5 text-xs sm:text-sm font-bold uppercase tracking-[0.24em] text-[#35DDB5]">
+                LET'S BUILD SOMETHING BETTER
+              </p>
+
+              <h2
+                id="services-cta-heading"
+                className="text-[clamp(2.7rem,7.5vw,5.5rem)] font-extrabold leading-[1.02] tracking-tight text-white"
               >
-                Discuss This Scope With Our Engineers
-              </button>
+                Ready to scale
+                <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00D9F5] via-[#35DDB5] to-[#00D9F5]">
+                  your business?
+                </span>
+              </h2>
+
+              <p className="mx-auto mt-7 max-w-2xl text-base sm:text-lg leading-relaxed text-slate-300">
+                From cloud and cybersecurity to software development, we help
+                businesses turn complex challenges into scalable digital
+                solutions.
+              </p>
+
+              <div className="mt-9 flex justify-center">
+                <button
+                  type="button"
+                  onClick={onGetInTouch}
+                  className="group inline-flex min-h-14 items-center justify-center gap-3 rounded-full bg-gradient-to-r from-cyan-400 to-teal-300 px-8 py-4 text-base font-bold text-slate-950 shadow-[0_10px_25px_rgba(0,217,245,0.25)] transition-all duration-300 hover:-translate-y-1 hover:brightness-110 hover:shadow-[0_16px_35px_rgba(0,217,245,0.35)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cyan-300"
+                >
+                  Contact Us
+                  <ArrowUpRight className="h-5 w-5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </button>
+              </div>
+
+              <p className="mt-5 text-xs sm:text-sm text-slate-400">
+                Have a project in mind? Let's talk about what's possible.
+              </p>
             </div>
-          </div>
-        </div>
+          </section>
+        </MotionReveal>
       </div>
 
-      {/* Interactive Service Detail Modal (Minimal Editorial Design) */}
+      {/* Existing Service Detail Modal */}
       <EditorialServiceModal
         isOpen={!!selectedService}
         onClose={() => setSelectedService(null)}

@@ -1,25 +1,70 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { PageId } from '../components/DarkHeader';
 import {
-  Briefcase,
-  MapPin,
-  Clock,
-  Sparkles,
-  CheckCircle2,
-  ArrowRight,
-  Code2,
-  Coffee,
-  Heart,
-  Laptop,
-  Send,
-  X,
-  FileText,
+  ArrowRight, Briefcase, CheckCircle2, Clock, Code2, Coffee, FileText,
+  GraduationCap, Heart, Laptop, MapPin, Send, Sparkles, Users, X,
 } from 'lucide-react';
+import {
+  MotionReveal,
+  StaggerContainer,
+  StaggerItem,
+  InteractiveCard,
+  FloatingElement,
+  motion,
+  AnimatePresence,
+} from '../components/MotionTransitions';
 
 interface CareersPageProps {
   onNavigate: (page: PageId) => void;
   onGetInTouch: () => void;
 }
+
+const jobs = [
+  {
+    id: 'fullstack-senior',
+    title: 'Senior Full-Stack Engineer',
+    department: 'Engineering',
+    location: 'Kukatpally, Hyderabad',
+    type: 'Full-time',
+    experience: 'Senior Level',
+    description: 'Architect and deploy high-performance web applications using React, Next.js, Node.js, and containerized microservices for enterprise client projects.',
+    skills: ['React / Next.js', 'Node.js / TypeScript', 'PostgreSQL', 'Docker / K8s', 'AWS'],
+    icon: Code2,
+  },
+  {
+    id: 'cloud-devops',
+    title: 'Cloud DevOps Architect',
+    department: 'Infrastructure',
+    location: 'Kukatpally, Hyderabad',
+    type: 'Full-time',
+    experience: 'Senior Level',
+    description: 'Design automated multi-cloud CI/CD pipelines, manage container clusters, enforce security postures, and maintain reliable infrastructure operations.',
+    skills: ['AWS / GCP', 'Terraform', 'Kubernetes', 'CI/CD Pipelines', 'Linux Security'],
+    icon: Briefcase,
+  },
+  {
+    id: 'lead-uiux',
+    title: 'UI/UX Product Designer',
+    department: 'Design Studio',
+    location: 'Kukatpally, Hyderabad',
+    type: 'Full-time',
+    experience: 'Mid-Senior Level',
+    description: 'Create component-driven enterprise design systems, build interactive high-fidelity prototypes, and ensure crisp developer handoffs for web products.',
+    skills: ['Figma', 'Design Systems', 'Micro-interactions', 'User Research', 'Prototyping'],
+    icon: Sparkles,
+  },
+  {
+    id: 'growth-seo-specialist',
+    title: 'SEO & Growth Strategist',
+    department: 'Digital Marketing',
+    location: 'Kukatpally, Hyderabad',
+    type: 'Full-time',
+    experience: 'Mid-Senior Level',
+    description: 'Direct technical on-page and off-page organic acquisition funnels, oversee backlink equity campaigns, and conduct conversion analytics for partner brands.',
+    skills: ['Technical SEO', 'GA4 & BigQuery', 'Ahrefs / Semrush', 'Content Funnels', 'CRO'],
+    icon: Send,
+  },
+];
 
 export const CareersPage: React.FC<CareersPageProps> = ({ onNavigate, onGetInTouch }) => {
   const [selectedJob, setSelectedJob] = useState<string | null>(null);
@@ -28,112 +73,16 @@ export const CareersPage: React.FC<CareersPageProps> = ({ onNavigate, onGetInTou
   const [applicantPhone, setApplicantPhone] = useState('');
   const [applicantPortfolio, setApplicantPortfolio] = useState('');
   const [applicantResumeName, setApplicantResumeName] = useState('');
-  const [applicantRole, setApplicantRole] = useState('Senior Full-Stack Engineer (React / Node)');
+  const [applicantResumeData, setApplicantResumeData] = useState<string>('');
+  const [applicantRole, setApplicantRole] = useState('Senior Full-Stack Engineer');
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [applicationReceipt, setApplicationReceipt] = useState<{ id: string; destination: string } | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
-
   const modalRef = useRef<HTMLDivElement | null>(null);
   const closeBtnRef = useRef<HTMLButtonElement | null>(null);
   const previouslyFocusedElementRef = useRef<HTMLElement | null>(null);
-
-  useEffect(() => {
-    if (selectedJob) {
-      previouslyFocusedElementRef.current = document.activeElement as HTMLElement;
-      const originalOverflow = document.body.style.overflow;
-      document.body.style.overflow = 'hidden';
-
-      const timer = setTimeout(() => {
-        closeBtnRef.current?.focus();
-      }, 50);
-
-      const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.key === 'Escape') {
-          e.preventDefault();
-          handleCloseModal();
-        }
-
-        if (e.key === 'Tab' && modalRef.current) {
-          const focusableElements = modalRef.current.querySelectorAll<HTMLElement>(
-            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-          );
-          if (focusableElements.length === 0) return;
-
-          const firstElement = focusableElements[0];
-          const lastElement = focusableElements[focusableElements.length - 1];
-
-          if (e.shiftKey) {
-            if (document.activeElement === firstElement) {
-              e.preventDefault();
-              lastElement.focus();
-            }
-          } else {
-            if (document.activeElement === lastElement) {
-              e.preventDefault();
-              firstElement.focus();
-            }
-          }
-        }
-      };
-
-      window.addEventListener('keydown', handleKeyDown);
-      return () => {
-        clearTimeout(timer);
-        document.body.style.overflow = originalOverflow;
-        window.removeEventListener('keydown', handleKeyDown);
-
-        if (previouslyFocusedElementRef.current && typeof previouslyFocusedElementRef.current.focus === 'function') {
-          previouslyFocusedElementRef.current.focus();
-        }
-      };
-    }
-  }, [selectedJob]);
-
-  const jobs = [
-    {
-      id: 'fullstack-senior',
-      title: 'Senior Full-Stack Engineer',
-      department: 'Engineering',
-      location: 'Madhapur, Hyderabad',
-      type: 'Full-time',
-      experience: 'Senior Level',
-      description:
-        'Architect and deploy high-performance web applications using React, Next.js, Node.js, and containerized microservices for enterprise client projects.',
-      skills: ['React / Next.js', 'Node.js / TypeScript', 'PostgreSQL', 'Docker / K8s', 'AWS'],
-    },
-    {
-      id: 'cloud-devops',
-      title: 'Cloud DevOps Architect',
-      department: 'Infrastructure',
-      location: 'Madhapur, Hyderabad',
-      type: 'Full-time',
-      experience: 'Senior Level',
-      description:
-        'Design automated multi-cloud CI/CD pipelines, manage container clusters, enforce security postures, and maintain reliable infrastructure operations.',
-      skills: ['AWS / GCP', 'Terraform', 'Kubernetes', 'CI/CD Pipelines', 'Linux Security'],
-    },
-    {
-      id: 'lead-uiux',
-      title: 'UI/UX Product Designer',
-      department: 'Design Studio',
-      location: 'Madhapur, Hyderabad',
-      type: 'Full-time',
-      experience: 'Mid-Senior Level',
-      description:
-        'Create component-driven enterprise design systems, build interactive high-fidelity prototypes, and ensure crisp developer handoffs for web products.',
-      skills: ['Figma', 'Design Systems', 'Micro-interactions', 'User Research', 'Prototyping'],
-    },
-    {
-      id: 'growth-seo-specialist',
-      title: 'SEO & Growth Strategist',
-      department: 'Digital Marketing',
-      location: 'Madhapur, Hyderabad',
-      type: 'Full-time',
-      experience: 'Mid-Senior Level',
-      description:
-        'Direct technical on-page and off-page organic acquisition funnels, oversee backlink equity campaigns, and conduct conversion analytics for partner brands.',
-      skills: ['Technical SEO', 'GA4 & BigQuery', 'Ahrefs / Semrush', 'Content Funnels', 'CRO'],
-    },
-  ];
 
   const handleCloseModal = () => {
     setSelectedJob(null);
@@ -142,318 +91,490 @@ export const CareersPage: React.FC<CareersPageProps> = ({ onNavigate, onGetInTou
     setApplicantPhone('');
     setApplicantPortfolio('');
     setApplicantResumeName('');
+    setApplicantResumeData('');
     setSubmitted(false);
+    setIsSubmitting(false);
+    setSubmitError(null);
+    setApplicationReceipt(null);
     setErrors({});
   };
 
+  useEffect(() => {
+    if (!selectedJob) return;
+    previouslyFocusedElementRef.current = document.activeElement as HTMLElement;
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const timer = window.setTimeout(() => closeBtnRef.current?.focus(), 50);
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        handleCloseModal();
+      }
+      if (e.key === 'Tab' && modalRef.current) {
+        const elements = modalRef.current.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), input:not([disabled]), [href], select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+        if (!elements.length) return;
+        const first = elements[0];
+        const last = elements[elements.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.clearTimeout(timer);
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+      previouslyFocusedElementRef.current?.focus?.();
+    };
+  }, [selectedJob]);
+
   const validate = () => {
-    const errs: Record<string, string> = {};
-    if (!applicantName.trim()) errs.name = 'Please enter your full name';
+    const next: Record<string, string> = {};
+    if (!applicantName.trim()) next.name = 'Please enter your full name';
     if (!applicantEmail.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(applicantEmail.trim())) {
-      errs.email = 'Please enter a valid email address';
+      next.email = 'Please enter a valid email address';
     }
     const digits = applicantPhone.replace(/\D/g, '');
-    if (!applicantPhone.trim()) {
-      errs.phone = 'Please enter your contact phone number';
-    } else if (digits.length < 7) {
-      errs.phone = 'Please enter a valid phone number (at least 7 digits)';
-    }
-    if (!applicantPortfolio.trim()) {
-      errs.portfolio = 'Please provide your GitHub, LinkedIn, or portfolio link';
-    }
-    setErrors(errs);
-    return Object.keys(errs).length === 0;
+    if (!applicantPhone.trim()) next.phone = 'Please enter your contact phone number';
+    else if (digits.length < 7) next.phone = 'Please enter a valid phone number (at least 7 digits)';
+    if (!applicantPortfolio.trim()) next.portfolio = 'Please provide your GitHub, LinkedIn, or portfolio link';
+    if (errors.resume) next.resume = errors.resume;
+    setErrors(next);
+    return Object.keys(next).length === 0;
   };
 
-  const handleApply = (e: React.FormEvent) => {
+  const handleApply = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (validate()) {
+    if (!validate()) return;
+
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      const response = await fetch('/api/careers/apply', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: applicantName.trim(),
+          email: applicantEmail.trim(),
+          phone: applicantPhone.trim(),
+          position: applicantRole,
+          portfolio: applicantPortfolio.trim(),
+          resumeFileName: applicantResumeName || null,
+          resumeBase64: applicantResumeData || null,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || 'Failed to submit application. Please check your details and try again.');
+      }
+
+      setApplicationReceipt({
+        id: data.applicationId || `APP-${Date.now()}`,
+        destination: data.dispatchedTo || 'hscglobalenterprises5@gmail.com',
+      });
       setSubmitted(true);
+    } catch (err: any) {
+      console.error('Application submission error:', err);
+      setSubmitError(err.message || 'Unable to connect to recruitment server. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
+  };
+
+  const scrollToRoles = () => {
+    document.getElementById('current-opportunities')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
-    <div className="relative z-10 py-16 sm:py-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 sm:space-y-24">
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-950/60 border border-cyan-800/50 text-cyan-300 text-xs sm:text-sm font-mono uppercase tracking-wider font-semibold">
-            Join Our Hyderabad Engineering Hub
-          </div>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white tracking-tight leading-tight">
-            Build Meaningful Software at{' '}
-            <span className="text-cyan-400">
-              Hscgolbalservices
-            </span>
-          </h1>
-          <p className="text-base sm:text-lg md:text-xl text-slate-300 leading-relaxed font-normal">
-            We are looking for passionate engineers, designers, and growth tacticians who thrive on clean code, mutual respect, and building transformative products.
-          </p>
-        </div>
+    <main className="relative z-10 overflow-hidden bg-[#050b17] text-white">
+      {/* Full-width hero with workplace photography */}
+      <section className="relative isolate flex min-h-[570px] items-center overflow-hidden sm:min-h-[640px]">
+        <motion.div
+          aria-hidden="true"
+          initial={{ scale: 1.07 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+          className="absolute inset-0 -z-20 bg-cover bg-center"
+          style={{ backgroundImage: "url('/CARRER.png')" }}
+        />
+        <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-r from-[#030914] via-[#04111f]/90 to-[#04111f]/45" />
+        <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-t from-[#050b17] via-transparent to-[#050b17]/25" />
+        <div aria-hidden="true" className="absolute inset-0 -z-10 opacity-20 [background-image:linear-gradient(rgba(34,211,238,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(34,211,238,0.12)_1px,transparent_1px)] [background-size:48px_48px]" />
 
-        {/* Engineering Culture & Focus Areas */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[
-            {
-              icon: <Laptop className="w-6 h-6 text-cyan-400" />,
-              title: 'Modern Development',
-              desc: 'Development using modern web technologies, structured workflows, and clean code standards.',
-            },
-            {
-              icon: <Coffee className="w-6 h-6 text-teal-400" />,
-              title: 'Madhapur Facility',
-              desc: 'Centrally located delivery facility in Madhapur, Hyderabad with active team collaboration.',
-            },
-            {
-              icon: <Sparkles className="w-6 h-6 text-emerald-400" />,
-              title: 'Technical Growth',
-              desc: 'Architecture reviews, hands-on engineering challenges, and technical problem solving.',
-            },
-            {
-              icon: <Heart className="w-6 h-6 text-blue-400" />,
-              title: 'Agile Collaboration',
-              desc: 'Transparent project coordination, cross-functional teamwork, and focused sprint execution.',
-            },
-          ].map((item, i) => (
-            <div key={i} className="glass-card rounded-xl p-6 sm:p-7 border border-slate-800 space-y-3.5 shadow-xl">
-              <div className="w-12 h-12 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center">
-                {item.icon}
+        <div className="mx-auto w-full max-w-7xl px-5 py-20 sm:px-8 lg:px-10 lg:py-28">
+          <MotionReveal duration={0.7} distance={25} blur className="max-w-3xl">
+            <FloatingElement distance={4} duration={5} className="inline-block mb-6">
+              <div className="inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-950/60 px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-cyan-300 backdrop-blur shadow-sm">
+                <Sparkles className="h-4 w-4" aria-hidden="true" /> Join Our Hyderabad Engineering Hub
               </div>
-              <h4 className="font-bold text-white text-lg sm:text-xl">{item.title}</h4>
-              <p className="text-slate-300 text-sm sm:text-base leading-relaxed">{item.desc}</p>
+            </FloatingElement>
+            <h1 className="max-w-3xl text-4xl font-extrabold leading-[1.08] tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+              Build Your Career<br />
+              With <span className="bg-gradient-to-r from-cyan-300 via-cyan-400 to-teal-300 bg-clip-text text-transparent">Purpose</span>
+            </h1>
+            <p className="mt-6 max-w-2xl text-base leading-7 text-slate-200 sm:text-lg sm:leading-8">
+              Grow with HSC Global Services. Work alongside curious minds, solve meaningful technology challenges, and help build digital experiences that make a difference.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <button type="button" onClick={scrollToRoles} className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-cyan-400 to-teal-300 px-7 py-3.5 text-sm font-bold text-slate-950 shadow-lg shadow-cyan-500/20 transition duration-300 hover:-translate-y-1 hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 cursor-pointer">
+                Explore Open Roles <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true" />
+              </button>
             </div>
-          ))}
+            <div className="mt-10 flex flex-wrap gap-x-7 gap-y-3 text-sm text-slate-200">
+              <span className="inline-flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-teal-300" aria-hidden="true" /> Meaningful projects</span>
+              <span className="inline-flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-teal-300" aria-hidden="true" /> Learning and growth</span>
+              <span className="inline-flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-teal-300" aria-hidden="true" /> Collaborative culture</span>
+            </div>
+          </MotionReveal>
         </div>
+      </section>
 
-        {/* Open Positions List */}
-        <div className="space-y-6">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-            <div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-white">Current Opportunities</h2>
-              <p className="text-sm sm:text-base text-slate-300 mt-1">Madhapur Delivery Center, Hyderabad.</p>
+      {/* Environment built for creators — image-backed cards */}
+      <section className="relative overflow-hidden px-5 py-16 sm:px-8 sm:py-20 lg:px-10">
+        <div aria-hidden="true" className="absolute inset-0 -z-10 opacity-25 [background-image:linear-gradient(rgba(34,211,238,0.10)_1px,transparent_1px),linear-gradient(90deg,rgba(34,211,238,0.10)_1px,transparent_1px)] [background-size:50px_50px]" />
+        <div className="mx-auto max-w-7xl">
+          <MotionReveal duration={0.7} distance={20} blur>
+            <div className="mx-auto mb-12 max-w-3xl text-center">
+              <p className="mb-3 text-xs font-bold uppercase tracking-[0.22em] text-cyan-300">Why build your career at HSC?</p>
+              <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">An environment built for <span className="text-cyan-300">creators</span></h2>
+              <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">Designed for engineers, designers, and innovators to build transformative digital products with high autonomy.</p>
             </div>
-            <span className="text-xs sm:text-sm font-mono text-cyan-400 font-bold">Active Roles</span>
+          </MotionReveal>
+
+          <StaggerContainer staggerDelay={0.09} className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
+            {[
+              {
+                number: '01', label: 'Architecture', icon: Laptop,
+                title: 'Modern Software Development',
+                desc: 'Work with modern tech stacks, structured workflows, clean code standards, and agile sprint delivery.',
+                image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=900&q=85',
+              },
+              {
+                number: '02', label: 'Campus', icon: Coffee,
+                title: 'Hyderabad Engineering Tech Hub',
+                desc: 'Centrally located delivery facility in Kukatpally, Hyderabad with active team collaboration.',
+                image: 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=85',
+              },
+              {
+                number: '03', label: 'Mastery', icon: GraduationCap,
+                title: 'Continuous Learning & Skill Growth',
+                desc: 'Architecture reviews, tech workshops, mentorship, and continuous skill progression opportunities.',
+                image: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=900&q=85',
+              },
+              {
+                number: '04', label: 'People', icon: Heart,
+                title: 'Supportive Inclusive Team Culture',
+                desc: 'Supportive team dynamics, transparent recognition, work-life balance, and mutual respect.',
+                image: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=900&q=85',
+              },
+            ].map((item) => {
+              const Icon = item.icon;
+              return (
+                <StaggerItem key={item.number} className="h-full">
+                  <InteractiveCard hoverY={-8} hoverScale={1.015} className="h-full">
+                    <article className="group relative min-h-[370px] h-full overflow-hidden rounded-[30px] border border-white/60 bg-slate-900 p-3 shadow-xl shadow-black/20 hover:border-cyan-300/80 transition-all duration-300">
+                      <div aria-hidden="true" className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-110" style={{ backgroundImage: `url('${item.image}')` }} />
+                      <div aria-hidden="true" className="absolute inset-0 bg-[#071321]/25" />
+                      <div className="relative flex h-full min-h-[344px] flex-col rounded-[23px] border border-white/70 bg-white/[0.96] p-6 text-left shadow-lg backdrop-blur-sm">
+                        <div className="mb-5 flex items-center justify-between gap-3">
+                          <span className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">{item.number} / {item.label}</span>
+                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-rose-50 text-rose-500 group-hover:rotate-12 group-hover:scale-110 transition-transform duration-300"><Icon className="h-4 w-4" aria-hidden="true" /></span>
+                        </div>
+                        <h3 className="text-2xl font-extrabold leading-[1.12] tracking-tight text-slate-950">{item.title}</h3>
+                        <p className="mt-4 text-sm leading-6 text-slate-600">{item.desc}</p>
+                      </div>
+                    </article>
+                  </InteractiveCard>
+                </StaggerItem>
+              );
+            })}
+          </StaggerContainer>
+        </div>
+      </section>
+
+      {/* Current opportunities — job cards */}
+      <section id="current-opportunities" className="mx-auto max-w-7xl scroll-mt-24 px-5 py-16 sm:px-8 sm:py-20 lg:px-10">
+        <MotionReveal>
+          <div className="mb-10 text-center">
+            <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">Current Opportunities</h2>
           </div>
+        </MotionReveal>
 
-          <div className="space-y-4">
-            {jobs.map((job) => (
-              <div
-                key={job.id}
-                className="glass-card rounded-2xl p-6 sm:p-8 border border-slate-800 hover:border-cyan-500/40 transition-all flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-xl"
-              >
-                <div className="space-y-3 max-w-2xl">
-                  <div className="flex flex-wrap items-center gap-2.5">
-                    <span className="text-xs sm:text-sm font-mono px-3 py-1 rounded-full bg-cyan-950/80 text-cyan-300 border border-cyan-800/60 font-semibold">
-                      {job.department}
-                    </span>
-                    <span className="text-xs sm:text-sm font-mono text-slate-400 flex items-center gap-1.5">
-                      <MapPin className="w-4 h-4 text-slate-400" />
-                      {job.location}
-                    </span>
-                    <span className="text-xs sm:text-sm font-mono text-slate-400 flex items-center gap-1.5">
-                      <Clock className="w-4 h-4 text-slate-400" />
-                      {job.experience}
-                    </span>
-                  </div>
-
-                  <h3 className="text-xl sm:text-2xl font-bold text-white">{job.title}</h3>
-                  <p className="text-slate-300 text-sm sm:text-base leading-relaxed">{job.description}</p>
-
-                  <div className="flex flex-wrap gap-2 pt-1">
-                    {job.skills.map((s) => (
-                      <span
-                        key={s}
-                        className="text-xs font-mono px-3 py-1 rounded bg-slate-900 text-slate-300 border border-slate-800"
-                      >
-                        {s}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="shrink-0 self-start md:self-center">
+        <StaggerContainer staggerDelay={0.07} className="grid grid-cols-1 items-stretch gap-6 sm:grid-cols-2 xl:grid-cols-4">
+          {jobs.map((job) => (
+            <StaggerItem key={job.id} className="h-full">
+              <InteractiveCard hoverY={-5} className="h-full">
+                <article
+                  className="flex h-full flex-col items-center rounded-2xl border border-[#00D9F5]/30 hover:border-[#00D9F5] bg-[#071A2B]/90 hover:bg-[#0B2235] px-6 py-7 text-center shadow-lg hover:shadow-[0_15px_35px_rgba(0,217,245,0.12)] transition-all duration-300 group"
+                >
+                  <h3 className="min-h-[3.5rem] text-xl font-bold leading-7 tracking-tight text-white group-hover:text-[#00D9F5] transition-colors">{job.title}</h3>
+                  <p className="mt-3 text-sm sm:text-base leading-6 text-slate-300">Location: {job.location}</p>
+                  <p className="mt-1.5 text-sm sm:text-base leading-6 text-slate-300">Experience: {job.experience}</p>
+                  <p className="mt-2 text-xs sm:text-sm leading-6 text-cyan-300 font-mono">Skills: {job.skills.join(', ')}</p>
+                  <p className="mt-1.5 text-xs sm:text-sm leading-6 text-[#35DDB5] font-semibold">{job.department}</p>
                   <button
-                    onClick={() => {
-                      setApplicantRole(job.title);
-                      setSelectedJob(job.id);
-                    }}
-                    className="btn-glow-pill px-7 py-3 rounded-full text-sm font-bold text-slate-950 bg-gradient-to-r from-cyan-400 via-teal-400 to-emerald-300 hover:from-cyan-300 hover:to-emerald-200 shadow-md shadow-cyan-500/25 transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+                    type="button"
+                    onClick={() => { setApplicantRole(job.title); setSelectedJob(job.id); }}
+                    className="mt-6 inline-flex min-h-[46px] items-center justify-center gap-2 rounded-full bg-gradient-to-r from-cyan-400 to-teal-300 px-6 py-2.5 text-sm font-bold text-slate-950 transition hover:brightness-110 shadow-md shadow-cyan-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300"
                   >
                     Apply for Role
                   </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+                </article>
+              </InteractiveCard>
+            </StaggerItem>
+          ))}
+        </StaggerContainer>
+        <p className="mt-5 text-center text-xs leading-5 text-slate-400">Role details shown here are the current entries configured in this page. Confirm vacancies and hiring requirements before publishing.</p>
+      </section>
 
-        {/* Application Modal */}
+      {/* Bottom opportunities banner */}
+      <MotionReveal duration={0.8} distance={20} className="px-5 pb-16 sm:px-8 lg:px-10">
+        <div className="mx-auto flex min-h-[180px] max-w-7xl items-center rounded-[26px] border border-[#00D9F5]/40 bg-gradient-to-r from-[#071A2B] via-[#0B2235] to-[#071A2B] px-7 py-10 sm:px-10 lg:min-h-[220px] lg:px-16 shadow-xl">
+          <h2 className="max-w-3xl text-3xl font-semibold leading-tight tracking-tight text-white sm:text-4xl lg:text-[40px]">
+            Don’t miss new opportunities that match your skills and interests.
+          </h2>
+        </div>
+      </MotionReveal>
+
+      {/* Application modal: local-only behavior preserved */}
+      <AnimatePresence>
         {selectedJob && (
-          <div
-            role="dialog"
-            aria-modal="true"
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200"
+          <motion.div
+            role="presentation"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.22 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-md"
             onClick={handleCloseModal}
           >
-            <div
+            <motion.div
               ref={modalRef}
-              className="w-full max-w-lg rounded-2xl p-6 sm:p-8 border border-slate-800 bg-[#090d1a] shadow-2xl relative text-left space-y-6 max-h-[90vh] overflow-y-auto"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="application-modal-title"
+              aria-describedby="application-modal-description"
+              initial={{ opacity: 0, scale: 0.94, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.94, y: 15 }}
+              transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+              className="relative max-h-[90vh] w-full max-w-lg space-y-6 overflow-y-auto rounded-2xl border border-slate-700 bg-[#090d1a] p-6 text-left shadow-2xl sm:p-8"
               onClick={(e) => e.stopPropagation()}
             >
-              <button
-                ref={closeBtnRef}
-                onClick={handleCloseModal}
-                aria-label="Close form"
-                className="absolute top-5 right-5 p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/80 transition-colors cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-
-              <div>
-                <span className="text-xs sm:text-sm font-mono text-cyan-400 uppercase tracking-wider block font-semibold">
-                  Quick Application
-                </span>
-                <h3 className="text-2xl sm:text-3xl font-bold text-white mt-1">{applicantRole}</h3>
-                <p className="text-sm text-slate-300 mt-1">Madhapur Delivery Center, Hyderabad.</p>
+              <button ref={closeBtnRef} type="button" onClick={handleCloseModal} aria-label="Close application form" className="absolute right-5 top-5 rounded-lg p-1.5 text-slate-400 transition hover:bg-slate-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 cursor-pointer"><X className="h-5 w-5" aria-hidden="true" /></button>
+              <div className="pr-8">
+                <span className="block text-xs font-semibold uppercase tracking-[0.18em] text-cyan-300">Quick Application</span>
+                <h2 id="application-modal-title" className="mt-2 text-2xl font-bold text-white sm:text-3xl">{applicantRole}</h2>
+                <p id="application-modal-description" className="mt-2 text-sm text-slate-300">Kukatpally Delivery Center, Hyderabad.</p>
               </div>
 
               {submitted ? (
-                <div className="py-8 text-center space-y-4">
-                  <div className="w-14 h-14 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center mx-auto">
-                    <CheckCircle2 className="w-8 h-8" />
+                <div className="space-y-4 py-6 text-center">
+                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-emerald-400/30 bg-emerald-400/10 text-emerald-300">
+                    <CheckCircle2 className="h-9 w-9" aria-hidden="true" />
                   </div>
-                  <h4 className="text-xl sm:text-2xl font-bold text-white">Application Recorded</h4>
-                  <p className="text-sm sm:text-base text-slate-300 max-w-sm mx-auto leading-relaxed">
-                    Thank you, <strong className="text-white">{applicantName}</strong>. Your profile for <span className="text-cyan-300">{applicantRole}</span> has been received locally.
+                  <h3 className="text-xl font-bold text-white sm:text-2xl">Application Dispatched</h3>
+                  <p className="mx-auto max-w-sm text-sm leading-6 text-slate-300">
+                    Thank you, <strong className="text-white">{applicantName}</strong>. Your profile and resume for <span className="text-cyan-300 font-semibold">{applicantRole}</span> have been successfully transmitted to our recruitment team.
                   </p>
-                  <p className="text-xs font-mono text-slate-400">
-                    Direct recruitment desk: <span className="text-cyan-400">careers@creativesolutiontech.in</span>
-                  </p>
-                  <div className="pt-2">
-                    <button
-                      onClick={handleCloseModal}
-                      className="px-6 py-2.5 rounded-full bg-slate-800 hover:bg-slate-700 text-sm font-semibold text-white transition-colors cursor-pointer"
-                    >
-                      Close Window
-                    </button>
+                  <div className="mx-auto max-w-md rounded-xl border border-cyan-500/25 bg-cyan-950/40 p-3.5 text-left text-xs font-mono text-cyan-200 space-y-1">
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">Application Reference:</span>
+                      <span className="font-semibold text-white">{applicationReceipt?.id}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">Recruitment Dispatch:</span>
+                      <span className="text-cyan-300 truncate max-w-[220px]">{applicationReceipt?.destination}</span>
+                    </div>
+                    {applicantResumeName && (
+                      <div className="flex justify-between">
+                        <span className="text-slate-400">Resume Attached:</span>
+                        <span className="text-emerald-300 truncate max-w-[220px]">{applicantResumeName}</span>
+                      </div>
+                    )}
                   </div>
+                  <p className="text-xs leading-5 text-slate-400">
+                    Our technical recruitment team in Kukatpally, Hyderabad will evaluate your candidacy and get back to you promptly.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={handleCloseModal}
+                    className="rounded-full bg-gradient-to-r from-cyan-400 to-teal-300 px-7 py-3 text-sm font-bold text-slate-950 transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 cursor-pointer shadow-md shadow-cyan-500/20"
+                  >
+                    Close Window
+                  </button>
                 </div>
               ) : (
-                <form onSubmit={handleApply} className="space-y-4">
+                <form onSubmit={handleApply} noValidate className="space-y-4">
+                  {submitError && (
+                    <div role="alert" className="rounded-xl border border-rose-500/40 bg-rose-950/40 p-3.5 text-xs text-rose-200">
+                      <p className="font-bold text-rose-300 mb-1">Submission Failed</p>
+                      <p>{submitError}</p>
+                    </div>
+                  )}
+
                   <div>
-                    <label className="block text-xs sm:text-sm font-mono text-slate-300 uppercase mb-1 font-semibold">
-                      Full Name *
-                    </label>
+                    <label htmlFor="applicant-name" className="mb-1 block text-sm font-semibold text-slate-300">Full Name *</label>
                     <input
+                      id="applicant-name"
+                      name="applicantName"
                       type="text"
+                      autoComplete="name"
+                      required
                       value={applicantName}
                       onChange={(e) => setApplicantName(e.target.value)}
+                      aria-invalid={Boolean(errors.name)}
+                      aria-describedby={errors.name ? 'applicant-name-error' : undefined}
                       placeholder="e.g. Rahul Sharma"
-                      className={`w-full px-4 py-3 rounded-xl bg-slate-950 border text-white placeholder-slate-500 text-sm sm:text-base focus:outline-none focus:border-cyan-500 transition-colors ${
-                        errors.name ? 'border-red-500' : 'border-slate-800'
-                      }`}
+                      className={`w-full rounded-xl border bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition focus:outline-none focus:ring-2 focus:ring-cyan-500/40 ${errors.name ? 'border-red-500' : 'border-slate-800 focus:border-cyan-500'}`}
                     />
-                    {errors.name && <p className="text-xs text-red-400 mt-1 font-mono">{errors.name}</p>}
+                    {errors.name && <p id="applicant-name-error" role="alert" className="mt-1 text-xs text-red-400">{errors.name}</p>}
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
                     <div>
-                      <label className="block text-xs sm:text-sm font-mono text-slate-300 uppercase mb-1 font-semibold">
-                        Email Address *
-                      </label>
+                      <label htmlFor="applicant-email" className="mb-1 block text-sm font-semibold text-slate-300">Email Address *</label>
                       <input
+                        id="applicant-email"
+                        name="applicantEmail"
                         type="email"
+                        autoComplete="email"
+                        required
                         value={applicantEmail}
                         onChange={(e) => setApplicantEmail(e.target.value)}
-                        placeholder="rahul@example.com"
-                        className={`w-full px-4 py-3 rounded-xl bg-slate-950 border text-white placeholder-slate-500 text-sm sm:text-base focus:outline-none focus:border-cyan-500 transition-colors ${
-                          errors.email ? 'border-red-500' : 'border-slate-800'
-                        }`}
+                        aria-invalid={Boolean(errors.email)}
+                        aria-describedby={errors.email ? 'applicant-email-error' : undefined}
+                        placeholder="you@example.com"
+                        className={`w-full rounded-xl border bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition focus:outline-none focus:ring-2 focus:ring-cyan-500/40 ${errors.email ? 'border-red-500' : 'border-slate-800 focus:border-cyan-500'}`}
                       />
-                      {errors.email && <p className="text-xs text-red-400 mt-1 font-mono">{errors.email}</p>}
+                      {errors.email && <p id="applicant-email-error" role="alert" className="mt-1 text-xs text-red-400">{errors.email}</p>}
                     </div>
 
                     <div>
-                      <label className="block text-xs sm:text-sm font-mono text-slate-300 uppercase mb-1 font-semibold">
-                        Contact Phone *
-                      </label>
+                      <label htmlFor="applicant-phone" className="mb-1 block text-sm font-semibold text-slate-300">Contact Phone *</label>
                       <input
+                        id="applicant-phone"
+                        name="applicantPhone"
                         type="tel"
+                        autoComplete="tel"
+                        required
                         value={applicantPhone}
                         onChange={(e) => setApplicantPhone(e.target.value)}
+                        aria-invalid={Boolean(errors.phone)}
+                        aria-describedby={errors.phone ? 'applicant-phone-error' : undefined}
                         placeholder="+91 98765 43210"
-                        className={`w-full px-4 py-3 rounded-xl bg-slate-950 border text-white placeholder-slate-500 text-sm sm:text-base focus:outline-none focus:border-cyan-500 transition-colors ${
-                          errors.phone ? 'border-red-500' : 'border-slate-800'
-                        }`}
+                        className={`w-full rounded-xl border bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition focus:outline-none focus:ring-2 focus:ring-cyan-500/40 ${errors.phone ? 'border-red-500' : 'border-slate-800 focus:border-cyan-500'}`}
                       />
-                      {errors.phone && <p className="text-xs text-red-400 mt-1 font-mono">{errors.phone}</p>}
+                      {errors.phone && <p id="applicant-phone-error" role="alert" className="mt-1 text-xs text-red-400">{errors.phone}</p>}
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs sm:text-sm font-mono text-slate-300 uppercase mb-1 font-semibold">
-                      Portfolio or GitHub / LinkedIn URL *
-                    </label>
+                    <label htmlFor="applicant-portfolio" className="mb-1 block text-sm font-semibold text-slate-300">Portfolio or GitHub / LinkedIn URL *</label>
                     <input
+                      id="applicant-portfolio"
+                      name="applicantPortfolio"
                       type="text"
+                      required
                       value={applicantPortfolio}
                       onChange={(e) => setApplicantPortfolio(e.target.value)}
-                      placeholder="https://github.com/your-handle or LinkedIn"
-                      className={`w-full px-4 py-3 rounded-xl bg-slate-950 border text-white placeholder-slate-500 text-sm sm:text-base focus:outline-none focus:border-cyan-500 transition-colors ${
-                        errors.portfolio ? 'border-red-500' : 'border-slate-800'
-                      }`}
+                      aria-invalid={Boolean(errors.portfolio)}
+                      aria-describedby={errors.portfolio ? 'applicant-portfolio-error' : undefined}
+                      placeholder="https://linkedin.com/in/your-profile"
+                      className={`w-full rounded-xl border bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition focus:outline-none focus:ring-2 focus:ring-cyan-500/40 ${errors.portfolio ? 'border-red-500' : 'border-slate-800 focus:border-cyan-500'}`}
                     />
-                    {errors.portfolio && <p className="text-xs text-red-400 mt-1 font-mono">{errors.portfolio}</p>}
+                    {errors.portfolio && <p id="applicant-portfolio-error" role="alert" className="mt-1 text-xs text-red-400">{errors.portfolio}</p>}
                   </div>
 
                   <div>
-                    <label className="block text-xs sm:text-sm font-mono text-slate-300 uppercase mb-1 font-semibold">
-                      Resume / CV Attachment (Optional)
-                    </label>
+                    <label htmlFor="applicant-resume" className="mb-1 block text-sm font-semibold text-slate-300">Resume / CV Attachment (PDF or DOCX)</label>
                     <div className="flex items-center gap-3">
-                      <label className="flex-1 flex items-center justify-between px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-400 text-sm cursor-pointer hover:border-cyan-500/50 transition-colors">
-                        <span className="truncate">
-                          {applicantResumeName || 'Choose PDF / DOCX file (Max 5MB)'}
-                        </span>
-                        <FileText className="w-4 h-4 text-cyan-400 shrink-0 ml-2" />
-                        <input
-                          type="file"
-                          accept=".pdf,.doc,.docx"
-                          className="hidden"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              setApplicantResumeName(file.name);
-                            }
-                          }}
-                        />
+                      <label htmlFor="applicant-resume" className="flex min-w-0 flex-1 cursor-pointer items-center justify-between rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-slate-400 transition hover:border-cyan-500/50">
+                        <span className="truncate">{applicantResumeName || 'Upload resume to forward with application (Max 10MB)'}</span>
+                        <FileText className="ml-2 h-4 w-4 shrink-0 text-cyan-300" aria-hidden="true" />
                       </label>
+                      <input
+                        id="applicant-resume"
+                        name="applicantResume"
+                        type="file"
+                        accept=".pdf,.doc,.docx"
+                        className="sr-only"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          if (file.size > 10 * 1024 * 1024) {
+                            setErrors((prev) => ({ ...prev, resume: 'Please choose a file smaller than 10MB.' }));
+                            e.currentTarget.value = '';
+                            return;
+                          }
+                          setErrors((prev) => { const next = { ...prev }; delete next.resume; return next; });
+                          setApplicantResumeName(file.name);
+
+                          const reader = new FileReader();
+                          reader.onload = () => {
+                            if (typeof reader.result === 'string') {
+                              setApplicantResumeData(reader.result);
+                            }
+                          };
+                          reader.readAsDataURL(file);
+                        }}
+                      />
                       {applicantResumeName && (
                         <button
                           type="button"
-                          onClick={() => setApplicantResumeName('')}
-                          className="text-xs text-slate-400 hover:text-red-400 transition-colors cursor-pointer px-2"
+                          onClick={() => {
+                            setApplicantResumeName('');
+                            setApplicantResumeData('');
+                            const input = document.getElementById('applicant-resume') as HTMLInputElement | null;
+                            if (input) input.value = '';
+                          }}
+                          className="px-2 text-xs text-slate-400 transition hover:text-red-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 cursor-pointer"
                         >
                           Clear
                         </button>
                       )}
                     </div>
+                    {errors.resume && <p role="alert" className="mt-1 text-xs text-red-400">{errors.resume}</p>}
+                    <p className="mt-1 text-xs text-slate-500">Your attached resume will be securely transmitted directly to our recruitment inbox.</p>
                   </div>
 
-                  <div className="pt-2">
-                    <button
-                      type="submit"
-                      className="btn-glow-pill w-full py-3.5 rounded-full bg-gradient-to-r from-cyan-400 via-teal-400 to-emerald-300 hover:from-cyan-300 hover:to-emerald-200 text-slate-950 font-bold text-sm sm:text-base shadow-lg shadow-cyan-500/25 transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
-                    >
-                      Submit Candidate Profile
-                    </button>
-                  </div>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-cyan-400 to-teal-300 px-5 py-3.5 text-sm font-bold text-slate-950 shadow-lg shadow-cyan-500/15 transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <span className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
+                        <span>Transmitting to Recruitment...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Submit Candidate Profile</span>
+                        <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                      </>
+                    )}
+                  </button>
                 </form>
               )}
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         )}
-      </div>
-    </div>
+      </AnimatePresence>
+    </main>
   );
 };

@@ -1,4 +1,5 @@
-export type ServiceCategoryId = 'all' | 'web' | 'marketing' | 'staffing';
+
+export type ServiceCategoryId = 'all' | 'engineering' | 'enterprise';
 
 export interface ServiceCategory {
   id: ServiceCategoryId;
@@ -7,7 +8,7 @@ export interface ServiceCategory {
 
 export interface CSTService {
   id: string;
-  category: 'web' | 'marketing' | 'staffing';
+  category: ServiceCategoryId;
   categoryLabel: string;
   title: string;
   summary: string;
@@ -18,141 +19,166 @@ export interface CSTService {
 
 export const SERVICE_CATEGORIES: ServiceCategory[] = [
   { id: 'all', label: 'All Services' },
-  { id: 'web', label: 'Web & Cloud' },
-  { id: 'marketing', label: 'Digital Marketing & SEO' },
-  { id: 'staffing', label: 'IT Staffing' },
+  { id: 'engineering', label: 'Software & Cloud' },
+  { id: 'enterprise', label: 'Enterprise & Systems' },
 ];
 
+// ➡️ NEW SERVICES FIRST, followed by your existing services
 export const CST_SERVICES: CSTService[] = [
-  // WEB & CLOUD
+  // 1. NEW: IT Recruitment
   {
-    id: 'web-design-hosting',
-    category: 'web',
-    categoryLabel: 'WEB & CLOUD',
-    title: 'Web Design & Hosting',
-    summary: 'Modern websites and reliable hosting solutions designed for growing businesses.',
+    id: 'it-recruitment',
+    category: 'enterprise',
+    categoryLabel: 'TALENT & RECRUITMENT',
+    title: 'IT Recruitment',
+    summary:
+      'Connect with technology professionals whose skills match your business needs.',
     description:
-      'Websites planned around user needs and built with modern technologies, ultra-fast performance, and reliable cloud hosting.',
+      'IT recruitment helps organizations identify and hire suitable technology professionals for their technical and business requirements.',
     capabilities: [
-      'Web design & development',
-      'Responsive user experiences',
-      'Hosting solutions & CDN delivery',
-      'Website maintenance & support',
+      'Technical talent sourcing and candidate screening',
+      'Role-based skill and experience assessment',
+      'Candidate shortlisting and interview coordination',
     ],
-    ctaText: "Let's discuss your project",
-  },
-  {
-    id: 'web-technologies-consulting',
-    category: 'web',
-    categoryLabel: 'WEB & CLOUD',
-    title: 'Web Technologies & Consulting',
-    summary: 'Future-proofing your enterprise infrastructure and digital technology stack.',
-    description:
-      'We assess your IT needs, plan a future-proof strategy, and guide implementation with modern cloud architectures and reliable security.',
-    capabilities: [
-      'Enterprise IT architecture reviews',
-      'Cloud infrastructure planning',
-      'System modernisation & API integration',
-      'Security & DevOps consultation',
-    ],
-    ctaText: "Let's discuss your project",
-  },
-  {
-    id: 'cloud-infrastructure-qa',
-    category: 'web',
-    categoryLabel: 'WEB & CLOUD',
-    title: 'Cloud Infrastructure & QA',
-    summary: 'High-availability cloud hosting, deployment pipelines, and continuous reliability.',
-    description:
-      'Maintain continuous reliability with cloud server infrastructure, automated quality assurance regression suites, and enterprise uptime protocols.',
-    capabilities: [
-      'High-availability cloud hosting',
-      'Continuous CI/CD deployment pipelines',
-      'Automated quality assurance & regression suites',
-      'Performance & uptime monitoring',
-    ],
-    ctaText: "Let's discuss your project",
+    ctaText: "Let's discuss your hiring needs",
   },
 
-  // DIGITAL MARKETING & SEO
+  // 2. NEW: Staffing
   {
-    id: 'digital-marketing-seo',
-    category: 'marketing',
-    categoryLabel: 'DIGITAL MARKETING & SEO',
-    title: 'Digital Marketing & SEO',
-    summary: 'Performance acquisition engineered to scale high-intent organic and paid pipelines.',
+    id: 'staffing',
+    category: 'enterprise',
+    categoryLabel: 'TALENT & STAFFING',
+    title: 'Staffing',
+    summary:
+      'Find suitable professionals to support your project and workforce requirements.',
     description:
-      'Social, email, content, SEO, and paid advertising brought together into one unified strategy to maximize customer acquisition.',
+      'Staffing services help businesses identify suitable professionals based on required skills, experience, project needs, and team requirements.',
     capabilities: [
-      'Technical & on-page SEO',
-      'Search engine authority & backlinks',
-      'Performance advertising campaigns',
-      'Conversion tracking & marketing analytics',
+      'Technical and IT staffing support',
+      'Candidate matching for project requirements',
+      'Workforce planning and staffing coordination',
     ],
-    ctaText: "Let's discuss your project",
-  },
-  {
-    id: 'seo-backlinks',
-    category: 'marketing',
-    categoryLabel: 'DIGITAL MARKETING & SEO',
-    title: 'SEO & Backlinks',
-    summary: 'Long-term search visibility driven by algorithmic compliance and authority.',
-    description:
-      'On-site optimization paired with credible backlink building, ensuring search engines recognize your web properties as authoritative industry leaders.',
-    capabilities: [
-      'Domain authority & technical audits',
-      'Editorial outreach & link acquisition',
-      'Core Web Vitals optimization',
-      'Competitor gap & keyword research',
-    ],
-    ctaText: "Let's discuss your project",
-  },
-  {
-    id: 'marketing-analysis-roi',
-    category: 'marketing',
-    categoryLabel: 'DIGITAL MARKETING & SEO',
-    title: 'Marketing Analysis & ROI Optimization',
-    summary: 'Transforming campaign telemetry into decisive commercial advantages.',
-    description:
-      'We study market trends, customer behaviour, and conversion funnels to guide decisions and improve marketing ROI across all channels.',
-    capabilities: [
-      'Customer journey & funnel analysis',
-      'Multi-channel marketing attribution',
-      'Conversion rate optimization',
-      'Performance telemetry & reporting',
-    ],
-    ctaText: "Let's discuss your project",
+    ctaText: "Let's discuss your staffing needs",
   },
 
-  // IT STAFFING
+  // 3. NEW: Training & Placement
   {
-    id: 'staffing-solutions',
-    category: 'staffing',
-    categoryLabel: 'IT STAFFING',
-    title: 'Staffing Solutions',
-    summary: 'Vetted engineering talent deployed to accelerate roadmap execution.',
+    id: 'training-placement',
+    category: 'enterprise',
+    categoryLabel: 'TRAINING & CAREER DEVELOPMENT',
+    title: 'Training & Placement',
+    summary:
+      'Support skill development and career readiness through technical training.',
     description:
-      'Designers, developers, and QA engineers assembled on-demand from our Hyderabad delivery center for your full-lifecycle software builds.',
+      'Training and placement services focus on developing job-relevant technical skills and helping candidates prepare for employment opportunities.',
     capabilities: [
-      'Dedicated developer pods',
-      'Vetted senior software engineers',
-      'Flexible staff augmentation models',
-      'Direct workflow & sprint integration',
+      'Technical skills development',
+      'Practical learning and interview preparation',
+      'Career guidance and placement assistance',
     ],
-    ctaText: "Let's discuss your project",
+    ctaText: "Let's discuss training opportunities",
+  },
+
+  // 4. EXISTING: Cyber Security
+  {
+    id: 'cyber-security',
+    category: 'enterprise',
+    categoryLabel: 'SECURITY & GOVERNANCE',
+    title: 'Cyber Security',
+    summary:
+      'Comprehensive defensive architectures, automated vulnerability scanning, and proactive threat mitigation.',
+    description:
+      'Cybersecurity services help protect computer systems, networks, devices, and sensitive corporate data from unauthorized breaches, ransomware, and digital threats.',
+    capabilities: [
+      'Comprehensive vulnerability assessments & pen testing',
+      'Zero-Trust network architecture & IAM implementation',
+      'SOC 2, ISO 27001 & GDPR regulatory compliance audits',
+      '24/7 incident response, threat detection & monitoring',
+    ],
+    ctaText: "Let's secure your infrastructure",
+  },
+
+  // 5. EXISTING: Software Development
+  {
+    id: 'software-development',
+    category: 'engineering',
+    categoryLabel: 'CUSTOM ENGINEERING',
+    title: 'Software Development',
+    summary:
+      'Custom enterprise web platforms, robust APIs, and microservices built for scalability.',
+    description:
+      'Application development, also known as custom software development or app engineering, builds resilient, scalable systems that power business-critical workflows.',
+    capabilities: [
+      'Custom enterprise web applications & portals',
+      'Microservices & distributed cloud backends',
+      'High-throughput RESTful & GraphQL API ecosystems',
+      'Legacy software modernization & refactoring',
+    ],
+    ctaText: "Let's build your software",
+  },
+
+  // 6. EXISTING: Mobile Development
+  {
+    id: 'mobile-development',
+    category: 'engineering',
+    categoryLabel: 'MOBILE APPS',
+    title: 'Mobile development',
+    summary:
+      'Fluid cross-platform and native iOS & Android applications with offline capability and intuitive UX.',
+    description:
+      'Mobile development is a dynamic field that evolves rapidly due to mobile devices, delivering high-performance native iOS, Android, and cross-platform apps.',
+    capabilities: [
+      'Cross-platform iOS & Android apps (React Native / Flutter)',
+      'Native Swift and Kotlin high-performance modules',
+      'Offline-first data sync & real-time push notification engines',
+      'App Store and Google Play compliance & lifecycle deployment',
+    ],
+    ctaText: "Let's build your mobile app",
+  },
+
+  // 7. EXISTING: Cloud Services
+  {
+    id: 'cloud-services',
+    category: 'engineering',
+    categoryLabel: 'INFRASTRUCTURE & DEVOPS',
+    title: 'Cloud Services',
+    summary:
+      'Multi-cloud architectures, Kubernetes orchestration, serverless hosting, and automated CI/CD pipelines.',
+    description:
+      'Cloud services provide resilient cloud-native architecture, serverless infrastructure, continuous integration, and managed DevOps for enterprise-scale operations.',
+    capabilities: [
+      'Multi-cloud architecture & landing zone implementation (AWS / GCP / Azure)',
+      'Infrastructure as Code (Terraform, Pulumi, CloudFormation)',
+      'Kubernetes cluster orchestration & auto-scaling configuration',
+      'Automated CI/CD deployment pipelines & 24/7 uptime monitoring',
+    ],
+    ctaText: "Let's architect your cloud",
+  },
+
+  // 8. EXISTING: SAP Services
+  {
+    id: 'sap-services',
+    category: 'enterprise',
+    categoryLabel: 'ENTERPRISE ERP',
+    title: 'SAP Services',
+    summary:
+      'End-to-end ERP implementation, S/4HANA migration, custom ABAP/Fiori apps, and systems integration.',
+    description:
+      'SAP services deliver enterprise ERP consulting, implementation, system upgrades, and custom integration to streamline complex enterprise operations.',
+    capabilities: [
+      'SAP S/4HANA roadmap, implementation & migration execution',
+      'Custom SAP ABAP & Fiori user-interface engineering',
+      'ERP integration with third-party CRM, logistics & financial tools',
+      'System health checks, performance tuning & ongoing support',
+    ],
+    ctaText: "Let's optimize your SAP landscape",
   },
 ];
 
-// Concise selection for the Homepage (6 primary services representing each category)
-export const HOMEPAGE_SERVICES: CSTService[] = [
-  CST_SERVICES[0], // Web Design & Hosting
-  CST_SERVICES[1], // Web Technologies & Consulting
-  CST_SERVICES[2], // Cloud Infrastructure & QA
-  CST_SERVICES[3], // Digital Marketing & SEO
-  CST_SERVICES[4], // SEO & Backlinks
-  CST_SERVICES[6], // Staffing Solutions
-];
+// ➡️ Homepage services automatically follow the same order
+export const HOMEPAGE_SERVICES: CSTService[] = [...CST_SERVICES];
 
+// ➡️ Existing service lookup remains unchanged
 export const getServiceById = (id: string): CSTService | undefined => {
   return CST_SERVICES.find((s) => s.id === id);
 };

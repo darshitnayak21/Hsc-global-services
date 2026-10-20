@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { PageId } from './DarkHeader';
-import { MapPin, Phone, Mail, ArrowUpRight, ShieldCheck, X } from 'lucide-react';
+import { BrandLogo } from '../design-system/BrandLogo';
+import { Play, X } from 'lucide-react';
 
 interface DarkFooterProps {
   onNavigate: (page: PageId) => void;
-  onContactClick: () => void;
+  onContactClick?: () => void;
+  onReplayIntro?: () => void;
 }
 
-export const DarkFooter: React.FC<DarkFooterProps> = ({ onNavigate, onContactClick }) => {
+export const DarkFooter: React.FC<DarkFooterProps> = ({ onNavigate }) => {
   const [legalModal, setLegalModal] = useState<'privacy' | 'terms' | null>(null);
 
   useEffect(() => {
@@ -30,170 +33,203 @@ export const DarkFooter: React.FC<DarkFooterProps> = ({ onNavigate, onContactCli
     }
   }, [legalModal]);
 
-  const footerNavLinks: { id: PageId; label: string; path: string }[] = [
+  const servicesList: { id: string; label: string }[] = [
+    { id: 'cyber-security', label: 'Cyber Security' },
+    { id: 'software-development', label: 'Software Development' },
+    { id: 'mobile-development', label: 'Mobile development' },
+    { id: 'cloud-services', label: 'Cloud Services' },
+    { id: 'sap-services', label: 'SAP Services' },
+  ];
+
+  const pagesList: { id: PageId; label: string; path: string }[] = [
     { id: 'home', label: 'Home', path: '/' },
     { id: 'about', label: 'About Us', path: '/about' },
-    { id: 'services', label: 'Services & Solutions', path: '/services' },
-    { id: 'careers', label: 'Careers & IT Staffing', path: '/careers' },
-    { id: 'clients', label: 'Clients & Case Studies', path: '/clients' },
-    { id: 'contact', label: 'Contact & Inquiries', path: '/contact' },
+    { id: 'services', label: 'Services', path: '/services' },
+    { id: 'careers', label: 'Careers', path: '/careers' },
+    { id: 'contact', label: 'Contact Us', path: '/contact' },
   ];
 
   return (
-    <footer className="relative z-10 border-t border-slate-800/80 bg-[#02050e] pt-16 pb-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
-          {/* Col 1: Brand Info */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              <span className="font-black text-white text-xl sm:text-2xl tracking-tight">Hscgolbalservices</span>
-            </div>
-            <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
-              Enterprise web development, digital growth marketing, and specialized technology staffing solutions delivered from Madhapur, Hyderabad.
+    <footer className="relative isolate z-10 overflow-hidden bg-[#030712] text-slate-200 pt-16 sm:pt-20 pb-12 border-t border-slate-800 font-sans">
+      {/* Animated HSC watermark: positioned across the main footer as requested */}
+      <style>{`
+        @keyframes hsc-watermark-drift {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-7px); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .hsc-watermark-letter { animation: none !important; }
+        }
+      `}</style>
+      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-4 bottom-16 z-0 select-none overflow-hidden text-white">
+        <span className="hsc-watermark-letter absolute left-[10%] top-0 font-black leading-none text-[clamp(8rem,22vw,18rem)] tracking-normal" style={{ opacity: 0.028, animation: 'hsc-watermark-drift 9s ease-in-out infinite' }}>H</span>
+        <span className="hsc-watermark-letter absolute left-[38%] top-0 font-black leading-none text-[clamp(8rem,22vw,18rem)] tracking-normal" style={{ opacity: 0.028, animation: 'hsc-watermark-drift 9s ease-in-out 1.2s infinite' }}>S</span>
+        <span className="hsc-watermark-letter absolute left-[68%] top-0 font-black leading-none text-[clamp(8rem,22vw,18rem)] tracking-normal" style={{ opacity: 0.028, animation: 'hsc-watermark-drift 9s ease-in-out 2.4s infinite' }}>C</span>
+      </div>
+      <div className="relative z-10 w-full px-3 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8 pb-14">
+          {/* Column 1: Brand Info & Certifications (lg:col-span-5) */}
+          <div className="lg:col-span-5 space-y-6">
+            {/* Brand Logo & Name - Positioned alongside company name matching reference */}
+            <button
+              type="button"
+              onClick={() => onNavigate('home')}
+              className="group text-left rounded-xl p-1 -m-1 cursor-pointer transition-opacity hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00D9F5]"
+              aria-label="HSC GLOBAL SERVICES - Home"
+            >
+              <BrandLogo size="md" theme="dark" />
+            </button>
+
+            {/* Description */}
+            <p className="text-base sm:text-lg text-slate-300 leading-relaxed max-w-md font-normal">
+              We have been efficiently collaborating with many international and domestic clients in
+              various domains and verticals for automating their business process and IT services.
             </p>
-            <div className="flex items-center gap-2 text-xs sm:text-sm font-mono text-cyan-400">
-              <span className="w-2 h-2 rounded-full bg-cyan-400 inline-block animate-ping" />
-              <span>Madhapur Core Delivery Center Active</span>
-            </div>
           </div>
 
-          {/* Col 2: Navigation & Multi-Page Links */}
-          <div className="space-y-3">
-            <h4 className="text-sm font-mono font-bold text-slate-200 uppercase tracking-wider">
-              Explore Pages
-            </h4>
-            <ul className="space-y-2.5 text-sm sm:text-base text-slate-300">
-              {footerNavLinks.map((link) => (
-                <li key={link.id}>
+          {/* Column 2: Services List (lg:col-span-2) */}
+          <div className="lg:col-span-2 space-y-4">
+            <h3 className="text-2xl sm:text-3xl font-bold text-white tracking-wide">Services</h3>
+            <ul className="space-y-3.5 text-lg text-slate-300">
+              {servicesList.map((service) => (
+                <li key={service.id}>
+                  <button
+                    type="button"
+                    onClick={() => onNavigate('services')}
+                    className="group inline-flex items-center gap-2 hover:text-rose-600 transition-colors cursor-pointer text-left focus-visible:outline-none focus-visible:text-rose-600"
+                  >
+                    <span className="text-blue-500 text-xs transition-transform group-hover:translate-x-0.5 select-none font-bold">
+                      ▸
+                    </span>
+                    <span className="group-hover:underline underline-offset-4 font-normal">
+                      {service.label}
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Column 3: Pages List (lg:col-span-2) */}
+          <div className="lg:col-span-2 space-y-4">
+            <h3 className="text-2xl sm:text-3xl font-bold text-white tracking-wide">Pages</h3>
+            <ul className="space-y-3.5 text-lg text-slate-300">
+              {pagesList.map((page) => (
+                <li key={page.id}>
                   <a
-                    href={link.path}
+                    href={page.path}
                     onClick={(e) => {
                       e.preventDefault();
-                      onNavigate(link.id);
+                      onNavigate(page.id);
                     }}
-                    className="hover:text-cyan-400 transition-colors cursor-pointer text-left block font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400 rounded px-0.5"
+                    className="group inline-flex items-center gap-2 hover:text-rose-600 transition-colors cursor-pointer focus-visible:outline-none focus-visible:text-rose-600"
                   >
-                    {link.label}
+                    <span className="text-blue-500 text-xs transition-transform group-hover:translate-x-0.5 select-none font-bold">
+                      ▸
+                    </span>
+                    <span className="group-hover:underline underline-offset-4 font-normal">
+                      {page.label}
+                    </span>
                   </a>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Col 3: Hyderabad Office Details */}
-          <div className="space-y-3">
-            <h4 className="text-sm font-mono font-bold text-slate-200 uppercase tracking-wider">
-              Hyderabad Headquarters
-            </h4>
-            <address className="not-italic text-sm sm:text-base text-slate-300 space-y-3 leading-relaxed">
-              <div className="flex items-start gap-2.5">
-                <MapPin className="w-4 h-4 text-cyan-400 shrink-0 mt-1" />
-                <span>
-                  Plot No. 3-332, 333, G2, Road No. 17, Ayyappa Society, Mega Hills, Madhapur, Hyderabad, Telangana 500081
-                </span>
+          {/* Column 4: Get in Touch (lg:col-span-3) */}
+          <div className="lg:col-span-3 space-y-4">
+            <h3 className="text-2xl sm:text-3xl font-bold text-white tracking-wide">Get in Touch</h3>
+            <div className="space-y-4 text-lg text-slate-300 leading-relaxed font-normal">
+              {/* Email */}
+              <div>
+                <span className="text-blue-400 text-lg sm:text-xl font-semibold">Email: </span>
+                <div className="space-y-1 mt-0.5">
+                  <a
+                    href="mailto:info@hscglobalserices.com"
+                    className="hover:text-rose-600 hover:underline transition-colors block text-slate-300"
+                  >
+                    info@hscglobalserices.com
+                  </a>
+                  <a
+                    href="mailto:hscglobalenterprises5@gmail.com"
+                    className="hover:text-rose-600 hover:underline transition-colors block text-slate-300"
+                  >
+                    hscglobalenterprises5@gmail.com
+                  </a>
+                </div>
               </div>
-              <div className="flex items-center gap-2.5 pt-1">
-                <Phone className="w-4 h-4 text-cyan-400 shrink-0" />
-                <a href="tel:+914035032090" className="hover:text-cyan-400 transition-colors font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400 rounded px-0.5">
-                  +91 40 3503 2090
-                </a>
-              </div>
-              <div className="flex items-center gap-2.5">
-                <Mail className="w-4 h-4 text-cyan-400 shrink-0" />
-                <a href="mailto:info@creativesolutiontech.in" className="hover:text-cyan-400 transition-colors font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400 rounded px-0.5">
-                  info@creativesolutiontech.in
-                </a>
-              </div>
-            </address>
-          </div>
 
-          {/* Col 4: Follow & Social */}
-          <div className="space-y-3">
-            <h4 className="text-sm font-mono font-bold text-slate-200 uppercase tracking-wider">
-              Connect With Us
-            </h4>
-            <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
-              Connect with our technology consulting and enterprise development teams across professional channels.
-            </p>
-            <div className="flex flex-wrap gap-2.5 pt-1">
-              <a
-                href="https://www.facebook.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-3.5 py-2 rounded-lg bg-slate-900 border border-slate-800 text-xs sm:text-sm font-medium text-slate-300 hover:text-cyan-400 hover:border-cyan-500/50 shadow-sm transition-colors inline-flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
-              >
-                <span>Facebook</span>
-                <ArrowUpRight className="w-3.5 h-3.5" />
-              </a>
-              <a
-                href="https://www.linkedin.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-3.5 py-2 rounded-lg bg-slate-900 border border-slate-800 text-xs sm:text-sm font-medium text-slate-300 hover:text-cyan-400 hover:border-cyan-500/50 shadow-sm transition-colors inline-flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
-              >
-                <span>LinkedIn</span>
-                <ArrowUpRight className="w-3.5 h-3.5" />
-              </a>
-              <a
-                href="https://twitter.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-3.5 py-2 rounded-lg bg-slate-900 border border-slate-800 text-xs sm:text-sm font-medium text-slate-300 hover:text-cyan-400 hover:border-cyan-500/50 shadow-sm transition-colors inline-flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
-              >
-                <span>Twitter / X</span>
-                <ArrowUpRight className="w-3.5 h-3.5" />
-              </a>
+              {/* Phone */}
+              <div>
+                <span className="text-blue-400 text-lg sm:text-xl font-semibold">Phone: </span>
+                <div className="space-y-1 mt-0.5 font-mono">
+                  <a
+                    href="tel:7799373334"
+                    className="hover:text-rose-600 hover:underline transition-colors block text-slate-300"
+                  >
+                    +91 7799373334
+                  </a>
+                  <a
+                    href="tel:+914031627399"
+                    className="hover:text-rose-600 hover:underline transition-colors block text-slate-300"
+                  >
+                    +91- 40 31627399
+                  </a>
+                </div>
+              </div>
+
+              {/* Address */}
+              <div>
+                <span className="text-blue-400 text-lg sm:text-xl font-semibold">Address: </span>
+                <p className="text-lg leading-relaxed mt-1 text-slate-300">
+                  Plot No 10, Anasuya Nilayam, Flat No 301,<br />
+                  Vivekananda Nagar colony, Kukatpally,<br />
+                  Hyderabad - 500072
+                </p>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Footer Bottom Bar */}
-        <div className="pt-8 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm font-mono text-slate-400">
-          <div>© {new Date().getFullYear()} Hscgolbalservices. All rights reserved.</div>
-          <div className="flex items-center gap-4">
-            <span className="text-cyan-400">Hyderabad Delivery Hub</span>
-            <span>·</span>
-            <button
-              onClick={() => setLegalModal('privacy')}
-              className="hover:text-slate-200 cursor-pointer focus-visible:outline-none focus-visible:text-cyan-400 focus-visible:underline"
-            >
-              Privacy Policy
-            </button>
-            <span>·</span>
-            <button
-              onClick={() => setLegalModal('terms')}
-              className="hover:text-slate-200 cursor-pointer focus-visible:outline-none focus-visible:text-cyan-400 focus-visible:underline"
-            >
-              Terms of Service
-            </button>
-            <span>·</span>
-            <span>Enterprise Code Quality</span>
-          </div>
+        {/* Minimal Footer Sub-Bar */}
+        <div className="pt-6 pb-2 border-t border-slate-700 text-center text-sm sm:text-base text-slate-400">
+          © 2026 HSC Global Services. All rights reserved.
         </div>
+      </div>
 
-        {/* Legal Policy Modal */}
+      {/* Legal Modal (Privacy & Terms) - Warm Porcelain Surface */}
+      <AnimatePresence>
         {legalModal && (
-          <div
+          <motion.div
             role="dialog"
             aria-modal="true"
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.22 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md"
             onClick={() => setLegalModal(null)}
           >
-            <div
-              className="w-full max-w-lg rounded-2xl p-6 sm:p-8 border border-slate-800 bg-[#090d1a] shadow-2xl relative text-left space-y-5 max-h-[85vh] overflow-y-auto"
+            <motion.div
+              initial={{ opacity: 0, scale: 0.94, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.94, y: 15 }}
+              transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+              className="w-full max-w-lg rounded-2xl p-6 sm:p-8 border border-[#00D9F5]/40 bg-[#071A2B] text-white shadow-2xl relative text-left space-y-5 max-h-[85vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
               <button
+                type="button"
                 onClick={() => setLegalModal(null)}
                 aria-label="Close dialog"
-                className="absolute top-5 right-5 p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/80 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+                className="absolute top-5 right-5 p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00D9F5]"
               >
                 <X className="w-5 h-5" />
               </button>
 
               <div className="space-y-1">
-                <span className="text-xs sm:text-sm font-mono text-cyan-400 uppercase tracking-wider block font-semibold">
-                  Legal &amp; Governance
+                <span className="text-xs sm:text-sm font-mono text-[#35DDB5] uppercase tracking-wider block font-semibold">
+                  Legal &amp; Compliance
                 </span>
                 <h3 className="text-2xl font-bold text-white">
                   {legalModal === 'privacy' ? 'Privacy Policy' : 'Terms of Service'}
@@ -201,43 +237,44 @@ export const DarkFooter: React.FC<DarkFooterProps> = ({ onNavigate, onContactCli
               </div>
 
               {legalModal === 'privacy' ? (
-                <div className="space-y-3.5 text-sm text-slate-300 leading-relaxed">
+                <div className="space-y-3.5 text-sm text-slate-300 leading-relaxed font-normal">
                   <p>
-                    Hscgolbalservices respects client privacy. Any information submitted through our contact channels or project scoping forms is used exclusively for evaluating technical requirements, preparing estimates, and direct communication.
+                    HSC Global Services respects your privacy. Any information submitted through our contact channels is used exclusively for evaluating technical requirements, scoping roadmaps, and client communication.
                   </p>
                   <p>
-                    We do not sell, rent, or share confidential project briefs or contact information with third parties. Mutual Non-Disclosure Agreements (NDAs) are routinely executed prior to reviewing proprietary codebases or sensitive business architecture.
+                    We do not sell, rent, or share confidential project briefs or contact information with third parties. Mutual Non-Disclosure Agreements (NDAs) are executed prior to reviewing sensitive source code or proprietary business architectures.
                   </p>
                   <p>
-                    For inquiries regarding data privacy or NDAs, contact us directly at <span className="text-cyan-400 font-mono">info@creativesolutiontech.in</span>.
+                    For privacy inquiries, contact us directly at <span className="text-[#00D9F5] font-mono font-medium">info@hscglobalserices.com</span>.
                   </p>
                 </div>
               ) : (
-                <div className="space-y-3.5 text-sm text-slate-300 leading-relaxed">
+                <div className="space-y-3.5 text-sm text-slate-300 leading-relaxed font-normal">
                   <p>
-                    Services provided by Hscgolbalservices are executed under formal statement-of-work agreements, master services agreements, or milestone contracts.
+                    All engineering engagements provided by HSC Global Services are governed by formal statements of work (SOW) or master services agreements.
                   </p>
                   <p>
                     All proprietary source code, software architectures, design assets, and intellectual property developed for client projects remain the full property of the client upon agreed completion and milestone settlement.
                   </p>
                   <p>
-                    Direct terms inquiries can be addressed to our delivery center in Madhapur, Hyderabad via <span className="text-cyan-400 font-mono">+91 40 3503 2090</span>.
+                    Direct terms inquiries can be addressed to our delivery center in Kukatpally, Hyderabad via <span className="text-[#00D9F5] font-mono font-medium">+91 7799373334</span>.
                   </p>
                 </div>
               )}
 
               <div className="pt-2">
                 <button
+                  type="button"
                   onClick={() => setLegalModal(null)}
-                  className="w-full py-2.5 rounded-full bg-slate-800 hover:bg-slate-700 text-sm font-semibold text-white transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+                  className="w-full py-2.5 rounded-lg bg-gradient-to-r from-[#00D9F5] to-[#35DDB5] hover:brightness-110 text-sm font-bold text-[#030712] transition-all cursor-pointer shadow-md shadow-cyan-500/20"
                 >
                   Close Window
                 </button>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         )}
-      </div>
+      </AnimatePresence>
     </footer>
   );
 };
