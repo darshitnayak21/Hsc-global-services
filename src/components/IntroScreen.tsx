@@ -18,13 +18,13 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onFinish }) => {
     if (hasTransitionedRef.current) return;
     hasTransitionedRef.current = true;
 
-    // Start cinematic dissolve / fade out
+    // Fast fade out for zero-delay website access
     setIsFadingOut(true);
 
-    // After fade completes, reveal main website
+    // Promptly reveal main website (200ms for smooth visual dissolve without delay)
     setTimeout(() => {
       onFinish();
-    }, 850);
+    }, 200);
   };
 
   useEffect(() => {
@@ -39,20 +39,29 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onFinish }) => {
       }
     }
 
-    // Safety fallback timer: The intro video is ~10.0 seconds. Transition after 11.5 seconds if not ended
+    // Keyboard listener: allow Enter, Space, or Escape to immediately skip with 0 delay
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (['Escape', ' ', 'Enter'].includes(e.key)) {
+        handleTransition();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
+    // Fast fallback timer: transition after 3.5 seconds if video doesn't play or stall occurs
     const fallbackTimer = setTimeout(() => {
       handleTransition();
-    }, 11500);
+    }, 3500);
 
     return () => {
       clearTimeout(fallbackTimer);
+      window.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
 
   return (
     <div
       onClick={handleTransition}
-      className={`fixed inset-0 z-50 flex items-center justify-center bg-[#eaeaea] overflow-hidden select-none cursor-pointer transition-all duration-1000 ease-out ${
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-[#eaeaea] overflow-hidden select-none cursor-pointer transition-all duration-200 ease-out ${
         isFadingOut ? 'opacity-0 scale-105 pointer-events-none' : 'opacity-100 scale-100'
       }`}
       aria-hidden={isFadingOut}

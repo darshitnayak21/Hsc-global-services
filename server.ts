@@ -48,21 +48,16 @@ const isProduction = process.env.NODE_ENV === 'production';
 app.use(express.json({ limit: '32mb' }));
 app.use(express.urlencoded({ extended: true, limit: '32mb' }));
 
-// Serve static assets from public folder directly with robust MIME types and case tolerance
+// Serve static assets from public folder directly with robust MIME types, caching, and case tolerance
 const publicDir = path.resolve(__dirname, 'public');
-app.use(express.static(publicDir));
-app.use('/images/clients', express.static(path.resolve(publicDir, 'images/Clients')));
-app.use('/images/clients', express.static(path.resolve(publicDir, 'images/clients')));
-app.use('/images/Clients', express.static(path.resolve(publicDir, 'images/Clients')));
-app.use('/images/Clients', express.static(path.resolve(publicDir, 'images/clients')));
+app.use(express.static(publicDir, { maxAge: '2h', etag: true }));
+app.use('/images/clients', express.static(path.resolve(publicDir, 'images/Clients'), { maxAge: '7d', etag: true }));
+app.use('/images/clients', express.static(path.resolve(publicDir, 'images/clients'), { maxAge: '7d', etag: true }));
+app.use('/images/Clients', express.static(path.resolve(publicDir, 'images/Clients'), { maxAge: '7d', etag: true }));
+app.use('/images/Clients', express.static(path.resolve(publicDir, 'images/clients'), { maxAge: '7d', etag: true }));
 
-// Ensure fresh video delivery and prevent stale browser caching of intro video
-app.use('/videos', (_req, res, next) => {
-  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-  res.setHeader('Pragma', 'no-cache');
-  res.setHeader('Expires', '0');
-  next();
-});
+// Efficient caching for videos with ETag support to prevent re-downloading on every visit
+app.use('/videos', express.static(path.resolve(publicDir, 'videos'), { maxAge: '1d', etag: true }));
 
 // Ensure data storage directory exists for applicant archival
 const dataDir = path.resolve(__dirname, 'data');

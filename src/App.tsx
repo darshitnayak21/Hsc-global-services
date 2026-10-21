@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import { DarkHeader, PageId, ColorTheme } from './components/DarkHeader';
 import { DarkFooter } from './components/DarkFooter';
 import { IntroScreen } from './components/IntroScreen';
+import { HomePage } from './pages/HomePage';
 
-const HomePage = lazy(() => import('./pages/HomePage').then((m) => ({ default: m.HomePage })));
 const AboutPage = lazy(() => import('./pages/AboutPage').then((m) => ({ default: m.AboutPage })));
 const ServicesPage = lazy(() => import('./pages/ServicesPage').then((m) => ({ default: m.ServicesPage })));
 const CareersPage = lazy(() => import('./pages/CareersPage').then((m) => ({ default: m.CareersPage })));
@@ -38,26 +38,9 @@ const getPageFromLocation = (): PageId => {
   return 'home';
 };
 
-// Active session cache key for intro video (updated to ensure freshly uploaded video plays)
+// Persistent cache key so returning users bypass the intro screen instantly with 0ms delay
+const INTRO_VIEWED_KEY = 'hsc_intro_viewed_persistent_v1';
 const ACTIVE_INTRO_SESSION_KEY = 'hsc_intro_video_v20261020_session';
-
-// Purge old video caching from localStorage and sessionStorage so previous visitors see the newly uploaded intro video
-const purgeLegacyVideoCache = () => {
-  try {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('hsc_intro_video_viewed');
-      sessionStorage.removeItem('hsc_intro_video_viewed');
-      localStorage.removeItem('hsc_intro_viewed');
-      sessionStorage.removeItem('hsc_intro_viewed');
-      localStorage.removeItem('hsc_intro_video_v1');
-      sessionStorage.removeItem('hsc_intro_video_v1');
-    }
-  } catch {
-    // Ignore in restricted environments
-  }
-};
-
-purgeLegacyVideoCache();
 
 const hasUserSeenIntro = (): boolean => {
   try {
@@ -66,8 +49,16 @@ const hasUserSeenIntro = (): boolean => {
     if (params.get('replay') === 'true' || params.get('intro') === 'true') {
       return false;
     }
-    // Only check current active session, legacy localStorage persistent caching removed
-    return sessionStorage.getItem(ACTIVE_INTRO_SESSION_KEY) === 'true';
+    // If arriving directly on a subpage (e.g. /careers, /services), load immediately with no intro delay
+    const initialPage = getPageFromLocation();
+    if (initialPage !== 'home') {
+      return true;
+    }
+    // Check persistent storage so returning visitors never experience delays
+    return (
+      localStorage.getItem(INTRO_VIEWED_KEY) === 'true' ||
+      sessionStorage.getItem(ACTIVE_INTRO_SESSION_KEY) === 'true'
+    );
   } catch {
     return false;
   }
@@ -75,9 +66,8 @@ const hasUserSeenIntro = (): boolean => {
 
 const markIntroAsViewed = () => {
   try {
+    localStorage.setItem(INTRO_VIEWED_KEY, 'true');
     sessionStorage.setItem(ACTIVE_INTRO_SESSION_KEY, 'true');
-    // Ensure legacy cache keys remain cleared
-    localStorage.removeItem('hsc_intro_video_viewed');
   } catch {
     // Ignore storage quota or restricted environment errors
   }
@@ -98,6 +88,26 @@ export default function App() {
   const handleReplayIntro = () => {
     setShowIntro(true);
   };
+
+  // Eagerly prefetch other pages in the background so tab navigation is instant with zero network wait
+  useEffect(() => {
+    const preloadRoutes = () => {
+      import('./pages/AboutPage');
+      import('./pages/ServicesPage');
+      import('./pages/CareersPage');
+      import('./pages/ClientsPage');
+      import('./pages/ContactPage');
+      import('./components/ConsultationModal');
+    };
+
+    if (typeof window !== 'undefined') {
+      if ('requestIdleCallback' in window) {
+        (window as any).requestIdleCallback(preloadRoutes);
+      } else {
+        setTimeout(preloadRoutes, 60);
+      }
+    }
+  }, []);
 
   // Sync with browser URL (popstate and hashchange)
   useEffect(() => {
@@ -200,10 +210,10 @@ export default function App() {
           <AnimatePresence mode="wait">
             <motion.div
               key={activePage}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15, ease: 'easeOut' }}
             >
               {activePage === 'home' && (
                 <HomePage
