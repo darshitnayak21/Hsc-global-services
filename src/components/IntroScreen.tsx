@@ -5,7 +5,7 @@ interface IntroScreenProps {
 }
 
 // Cache-buster version query to ensure browsers never serve a stale cached video
-const VIDEO_VERSION = '20261020_v2';
+const VIDEO_VERSION = '20261021_v2';
 const VIDEO_PATH = `/videos/intro-video.mp4?v=${VIDEO_VERSION}`;
 const POSTER_PATH = `/videos/intro-video-poster.jpg?v=${VIDEO_VERSION}`;
 
@@ -52,11 +52,10 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onFinish }) => {
   return (
     <div
       onClick={handleTransition}
-      className={`fixed inset-0 z-50 flex items-center justify-center bg-[#07051a] overflow-hidden select-none cursor-pointer transition-all duration-1000 ease-out ${
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-[#eaeaea] overflow-hidden select-none cursor-pointer transition-all duration-1000 ease-out ${
         isFadingOut ? 'opacity-0 scale-105 pointer-events-none' : 'opacity-100 scale-100'
       }`}
       aria-hidden={isFadingOut}
-      title="Click anywhere to skip intro"
     >
       {/* Pure Cinematic Video */}
       <video
@@ -80,18 +79,10 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onFinish }) => {
             }
           }
         }}
-        className="w-full h-full object-cover object-center pointer-events-none select-none"
+        className="w-full h-full object-contain md:landscape:object-cover object-center pointer-events-none select-none"
       >
         <source src={VIDEO_PATH} type="video/mp4" />
       </video>
-
-      {/* Subtle Skip Indicator */}
-      <div className="absolute bottom-6 right-6 z-10 flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/40 hover:bg-black/70 border border-white/10 backdrop-blur-md text-xs tracking-wider uppercase text-white/70 hover:text-white transition-colors duration-200">
-        <span>Skip</span>
-        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
-        </svg>
-      </div>
     </div>
   );
 };

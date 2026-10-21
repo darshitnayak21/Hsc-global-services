@@ -84,7 +84,7 @@ export const DarkHeader: React.FC<DarkHeaderProps> = ({
       role="banner"
       className="sticky top-0 z-40 bg-[#030712]/95 backdrop-blur-xl border-b border-[#00D9F5]/15 shadow-[0_4px_25px_-4px_rgba(0,217,245,0.06)] transition-all duration-200"
     >
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[76px] sm:h-[82px] md:h-[86px] flex items-center justify-between gap-4">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[82px] sm:h-[90px] md:h-[96px] flex items-center justify-between gap-4">
         {/* Brand Lockup: Logo alongside Company Name & Tagline */}
         <a
           href="/"

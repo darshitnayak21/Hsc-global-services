@@ -24,35 +24,35 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
   const [candidateIndex, setCandidateIndex] = useState(0);
   const [allFailed, setAllFailed] = useState(false);
 
-  // Proportional height matching the complete branding text block (company name + tagline)
+  // Increased logo height for prominent brand presence
   // Maintains 2:1 aspect ratio without stretching or cropping (image is 958 x 478)
   const logoHeightClass =
     size === 'sm'
-      ? 'h-8 sm:h-9'
+      ? 'h-9 sm:h-10'
       : size === 'lg'
-      ? 'h-11 sm:h-12 md:h-[52px] lg:h-[56px]'
-      : 'h-10 sm:h-11 md:h-12 lg:h-[48px]';
+      ? 'h-14 sm:h-16 md:h-[68px] lg:h-[76px]'
+      : 'h-12 sm:h-14 md:h-[58px] lg:h-[64px]';
 
   const gapClass =
     size === 'sm'
       ? 'gap-2.5 sm:gap-3'
       : size === 'lg'
-      ? 'gap-3.5 sm:gap-4 md:gap-5'
-      : 'gap-3 sm:gap-3.5 md:gap-4';
+      ? 'gap-4 sm:gap-5 md:gap-6'
+      : 'gap-3.5 sm:gap-4 md:gap-5';
 
   const headingSize =
     size === 'sm'
       ? 'text-xs sm:text-sm tracking-[1.5px]'
       : size === 'lg'
-      ? 'text-base sm:text-xl md:text-2xl tracking-[2px] sm:tracking-[2.5px] md:tracking-[3px]'
-      : 'text-sm sm:text-base md:text-lg lg:text-xl tracking-[1.8px] sm:tracking-[2.2px] md:tracking-[2.6px]';
+      ? 'text-lg sm:text-2xl md:text-3xl tracking-[2.5px] sm:tracking-[3.2px]'
+      : 'text-base sm:text-lg md:text-xl lg:text-[22px] tracking-[1.8px] sm:tracking-[2.2px] md:tracking-[2.8px]';
 
   const taglineSize =
     size === 'sm'
-      ? 'text-[9px] sm:text-[10px]'
+      ? 'text-[10px] sm:text-[11px]'
       : size === 'lg'
-      ? 'text-xs sm:text-sm md:text-[14px]'
-      : 'text-[10px] sm:text-xs md:text-[13px]';
+      ? 'text-sm sm:text-base md:text-[16px]'
+      : 'text-xs sm:text-[13px] md:text-sm lg:text-[14px]';
 
   const candidateList = [COMPANY_LOGO_PNG, ...HSC_LOGO_CANDIDATE_PATHS];
 

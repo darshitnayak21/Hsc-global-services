@@ -7,11 +7,15 @@ import { createServer as createViteServer } from 'vite';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// The configured recruitment email addresses for HSC Global Services
-const RECRUITMENT_EMAILS = [
-  'hscglobalenterprises5@gmail.com',
-  'info@hscglobalserices.com',
-];
+import {
+  RECRUITMENT_EMAIL,
+  generateApplicationId,
+  validateApplication,
+  archiveResumeToDisk,
+  recordApplicationInLedger,
+  dispatchToAppsScript,
+  isPlaceholderAppsScriptUrl,
+} from './src/server/careersService';
 
 const app = express();
 
@@ -38,12 +42,19 @@ function resolvePort(): number {
 
 const PORT = resolvePort();
 const distPath = path.resolve(__dirname, 'dist');
-const hasDist = fs.existsSync(path.resolve(distPath, 'index.html'));
-const isProduction = process.env.NODE_ENV === 'production' || (hasDist && process.env.NODE_ENV !== 'development');
+const isProduction = process.env.NODE_ENV === 'production';
 
-// Support JSON payloads with base64 encoded resumes up to 25MB
-app.use(express.json({ limit: '25mb' }));
-app.use(express.urlencoded({ extended: true, limit: '25mb' }));
+// Support JSON payloads with base64 encoded resumes up to 20MB decoded (~27MB base64)
+app.use(express.json({ limit: '32mb' }));
+app.use(express.urlencoded({ extended: true, limit: '32mb' }));
+
+// Serve static assets from public folder directly with robust MIME types and case tolerance
+const publicDir = path.resolve(__dirname, 'public');
+app.use(express.static(publicDir));
+app.use('/images/clients', express.static(path.resolve(publicDir, 'images/Clients')));
+app.use('/images/clients', express.static(path.resolve(publicDir, 'images/clients')));
+app.use('/images/Clients', express.static(path.resolve(publicDir, 'images/Clients')));
+app.use('/images/Clients', express.static(path.resolve(publicDir, 'images/clients')));
 
 // Ensure fresh video delivery and prevent stale browser caching of intro video
 app.use('/videos', (_req, res, next) => {
@@ -65,9 +76,13 @@ if (!fs.existsSync(applicationsFile)) {
 
 // Health check endpoint
 app.get('/api/health', (_req, res) => {
+  const scriptUrl = process.env.GOOGLE_APPS_SCRIPT_URL;
+  const isConfigured = Boolean(scriptUrl && !isPlaceholderAppsScriptUrl(scriptUrl));
   res.json({
     status: 'ok',
     service: 'HSC Global Services Careers & Web Backend',
+    recruitmentEmail: RECRUITMENT_EMAIL,
+    emailServiceConfigured: isConfigured,
     timestamp: new Date().toISOString(),
   });
 });
@@ -75,101 +90,99 @@ app.get('/api/health', (_req, res) => {
 // Careers Application Dispatch API
 app.post('/api/careers/apply', async (req, res) => {
   try {
-    const {
-      name,
-      email,
-      phone,
-      position,
-      portfolio,
-      resumeFileName,
-      resumeBase64,
-      coverNote,
-    } = req.body;
-
-    // Strict validation
-    if (!name || typeof name !== 'string' || !name.trim()) {
-      return res.status(400).json({ success: false, error: 'Full name is required.' });
+    const validation = validateApplication(req.body);
+    if (!validation.isValid || !validation.data) {
+      const firstError = Object.values(validation.errors)[0] || 'Invalid candidate data.';
+      return res.status(400).json({
+        success: false,
+        error: firstError,
+        details: validation.errors,
+      });
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email || typeof email !== 'string' || !emailRegex.test(email.trim())) {
-      return res.status(400).json({ success: false, error: 'A valid email address is required.' });
-    }
-
-    if (!phone || typeof phone !== 'string' || phone.trim().length < 7) {
-      return res.status(400).json({ success: false, error: 'A valid phone number is required.' });
-    }
-
-    if (!position || typeof position !== 'string') {
-      return res.status(400).json({ success: false, error: 'Target position is required.' });
-    }
-
-    const applicationId = `HSC-APP-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+    const candidate = validation.data;
+    const applicationId = generateApplicationId();
     const receivedAt = new Date().toISOString();
+
+    // Archive candidate resume to disk if attached
+    let localResumePath: string | null = null;
+    if (candidate.resumeBuffer && candidate.resumeFileName) {
+      localResumePath = archiveResumeToDisk(
+        dataDir,
+        applicationId,
+        candidate.resumeFileName,
+        candidate.resumeBuffer
+      );
+    }
+
+    // Dispatch application to Google Apps Script MailApp
+    const dispatchResult = await dispatchToAppsScript({
+      applicationId,
+      name: candidate.name,
+      email: candidate.email,
+      phone: candidate.phone,
+      position: candidate.position,
+      portfolio: candidate.portfolio,
+      coverNote: candidate.coverNote,
+      resumeFileName: candidate.resumeFileName,
+      resumeBase64: candidate.resumeBase64Clean,
+      receivedAt,
+    });
 
     const applicationRecord = {
       id: applicationId,
-      name: name.trim(),
-      email: email.trim().toLowerCase(),
-      phone: phone.trim(),
-      position: position.trim(),
-      portfolio: portfolio ? portfolio.trim() : '',
-      resumeFileName: resumeFileName || 'Not attached',
-      hasResumeFile: Boolean(resumeBase64),
-      resumeSizeKB: resumeBase64 ? Math.round((resumeBase64.length * 3) / 4 / 1024) : 0,
-      coverNote: coverNote ? coverNote.trim() : '',
-      recipients: RECRUITMENT_EMAILS,
+      name: candidate.name,
+      email: candidate.email,
+      phone: candidate.phone,
+      position: candidate.position,
+      portfolio: candidate.portfolio,
+      resumeFileName: candidate.resumeFileName || 'Not attached',
+      hasResumeFile: Boolean(candidate.resumeBuffer),
+      resumeSizeKB: candidate.resumeSizeKB,
+      coverNote: candidate.coverNote,
+      recipient: RECRUITMENT_EMAIL,
       receivedAt,
-      status: 'dispatched_to_recruitment',
+      status: dispatchResult.success ? 'email_dispatched' : 'email_dispatch_failed',
+      dispatchError: dispatchResult.error || null,
+      localResumePath,
     };
 
-    // Save candidate resume to disk if provided
-    if (resumeBase64 && resumeFileName) {
-      try {
-        const resumesDir = path.resolve(dataDir, 'resumes');
-        if (!fs.existsSync(resumesDir)) {
-          fs.mkdirSync(resumesDir, { recursive: true });
-        }
-        const safeFileName = `${applicationId}_${resumeFileName.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
-        const fileBuffer = Buffer.from(resumeBase64.replace(/^data:[^;]+;base64,/, ''), 'base64');
-        fs.writeFileSync(path.resolve(resumesDir, safeFileName), fileBuffer);
-      } catch (fileErr) {
-        console.error('Warning: could not write resume file to disk:', fileErr);
-      }
+    recordApplicationInLedger(applicationsFile, applicationRecord);
+
+    if (!dispatchResult.success) {
+      console.warn(`[Careers Dispatch Notice] ID: ${applicationId} - ${dispatchResult.error}`);
+      return res.status(dispatchResult.httpStatus || 502).json({
+        success: false,
+        error: dispatchResult.error || 'Failed to dispatch application to recruitment email service.',
+        applicationId,
+      });
     }
 
-    // Append to application archive ledger
-    try {
-      const existingData = JSON.parse(fs.readFileSync(applicationsFile, 'utf-8') || '[]');
-      existingData.push(applicationRecord);
-      fs.writeFileSync(applicationsFile, JSON.stringify(existingData, null, 2), 'utf-8');
-    } catch (saveErr) {
-      console.error('Error saving application to ledger:', saveErr);
-    }
-
-    console.log(`[Careers Application Received] ID: ${applicationId}`);
-    console.log(`Candidate: ${name} (${email}, ${phone})`);
-    console.log(`Role: ${position}`);
-    console.log(`Recruitment Destination: ${RECRUITMENT_EMAILS.join(', ')}`);
-    if (resumeFileName) {
-      console.log(`Attached Resume: ${resumeFileName}`);
-    }
+    console.log(`[Careers Application Dispatched] ID: ${applicationId} to ${RECRUITMENT_EMAIL} for role "${candidate.position}"`);
 
     return res.status(200).json({
       success: true,
-      message: 'Your application and resume have been successfully forwarded to our recruitment team.',
-      applicationId,
-      dispatchedTo: RECRUITMENT_EMAILS[0],
-      candidateName: name,
-      position,
+      message: 'Your application and resume have been successfully transmitted and accepted by our recruitment email service.',
+      applicationId: dispatchResult.applicationId || applicationId,
+      dispatchedTo: RECRUITMENT_EMAIL,
+      candidateName: candidate.name,
+      position: candidate.position,
     });
   } catch (error: any) {
     console.error('Error in /api/careers/apply:', error);
     return res.status(500).json({
       success: false,
-      error: 'An unexpected error occurred while processing your application. Please try again.',
+      error: 'An unexpected internal error occurred while processing your application. Please try again.',
     });
   }
+});
+
+// Explicit JSON handler for any other /api routes to prevent HTML fallbacks
+app.use('/api', (_req, res) => {
+  res.status(404).json({
+    success: false,
+    error: 'API endpoint not found',
+  });
 });
 
 // Setup dev server with Vite middlewares or serve production dist
@@ -213,7 +226,11 @@ async function startServer() {
   });
 }
 
-startServer().catch((err) => {
-  console.error('Failed to start server:', err);
-  process.exit(1);
-});
+if (process.env.NODE_ENV !== 'test') {
+  startServer().catch((err) => {
+    console.error('Failed to start server:', err);
+    process.exit(1);
+  });
+}
+
+export { app, startServer };

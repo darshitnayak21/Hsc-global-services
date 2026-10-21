@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { VERIFIED_CLIENTS } from './ClientLogoGrid';
+import { VERIFIED_CLIENTS, CLIENT_LOGOS } from './ClientLogoGrid';
 import { ShieldCheck, ArrowUpRight } from 'lucide-react';
 
 interface MovateClientMarqueeProps {
@@ -43,6 +43,7 @@ export const MovateClientMarquee: React.FC<MovateClientMarqueeProps> = ({
         <div className="animate-marquee-24s flex items-center gap-5 group hover:[animation-play-state:paused]">
           {marqueeItems.map((client, idx) => {
             const isHovered = hoveredClient === `${client.id}-${idx}`;
+            const logoSrc = CLIENT_LOGOS[client.id];
 
             return (
               <div
@@ -50,25 +51,21 @@ export const MovateClientMarquee: React.FC<MovateClientMarqueeProps> = ({
                 onMouseEnter={() => setHoveredClient(`${client.id}-${idx}`)}
                 onMouseLeave={() => setHoveredClient(null)}
                 onClick={() => onNavigate?.('clients')}
-                className="group/card relative flex-shrink-0 w-72 sm:w-80 rounded-[30px] bg-white border border-slate-200/90 p-5 transition-all duration-300 hover:border-[#3183FF]/50 hover:shadow-lg cursor-pointer overflow-hidden"
+                className="group/card relative flex-shrink-0 w-72 sm:w-80 h-32 sm:h-34 rounded-xl bg-white border border-slate-200/90 p-4 transition-all duration-300 hover:border-[#3183FF]/50 hover:shadow-lg cursor-pointer overflow-hidden flex items-center justify-center"
               >
-                <div className="relative z-10 flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-[16px] bg-slate-50 border border-slate-100 shrink-0">
-                      {client.logo}
-                    </div>
-                    <div className="overflow-hidden">
-                      <p className="text-xs font-semibold text-slate-900 truncate">
-                        {client.name}
-                      </p>
-                      <p className="text-[11px] text-slate-500 truncate mt-0.5">
-                        {client.industry}
-                      </p>
-                    </div>
+                {logoSrc ? (
+                  <img
+                    src={logoSrc}
+                    alt={`${client.name} logo`}
+                    loading="lazy"
+                    decoding="async"
+                    className="h-full w-full object-contain object-center transition-transform duration-300 group-hover/card:scale-105"
+                  />
+                ) : (
+                  <div className="p-2 rounded bg-slate-50 border border-slate-100 shrink-0">
+                    {client.logo}
                   </div>
-
-                  <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover/card:text-[#3183FF] transition-colors shrink-0" />
-                </div>
+                )}
               </div>
             );
           })}

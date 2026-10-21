@@ -71,20 +71,20 @@ export const ClientCard: React.FC<ClientCardProps> = ({
     <div
       tabIndex={isDisabled ? -1 : 0}
       onClick={() => !isDisabled && onClick?.(client.id)}
-      className={`p-6 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col items-center justify-center text-center transition-all duration-150 cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#007bff] ${stateClass} ${className}`}
+      className={`p-6 sm:p-7 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col items-center justify-center text-center transition-all duration-150 cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#007bff] ${stateClass} ${className}`}
       title={`${client.name} - ${client.industry}`}
       role="button"
       aria-label={`Client partner: ${client.name}`}
     >
-      <div className="h-10 flex items-center justify-center opacity-90 group-hover:opacity-100 transition-opacity transform group-hover:scale-105 duration-150">
+      <div className="h-12 sm:h-14 flex items-center justify-center opacity-90 group-hover:opacity-100 transition-opacity transform group-hover:scale-105 duration-150">
         {client.logo}
       </div>
 
-      <div className="mt-3 pt-3 border-t border-slate-100 w-full">
-        <span className="text-xs font-bold text-slate-800 block truncate font-['Raleway']">
+      <div className="mt-3.5 pt-3.5 border-t border-slate-100 w-full">
+        <span className="text-xs sm:text-sm font-bold text-slate-800 block truncate font-['Raleway']">
           {client.name}
         </span>
-        <span className="text-[10px] text-slate-500 font-mono block truncate mt-0.5">
+        <span className="text-[11px] sm:text-xs text-slate-500 font-mono block truncate mt-0.5">
           {client.industry}
         </span>
       </div>

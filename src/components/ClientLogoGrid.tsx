@@ -144,91 +144,18 @@ export const VERIFIED_CLIENTS: ClientItem[] = [
 ];
 
 
-export const ClientLogoGrid: React.FC<ClientLogoGridProps> = ({
-  onClientClick,
-}) => {
-  const logoPath = CLIENT_LOGOS[client.id];
+export interface ClientLogoGridProps {
+  onClientClick?: (clientId: string) => void;
+  className?: string;
+  variant?: 'grid' | 'marquee';
+}
 
-  return (
-    <div className="w-full overflow-hidden py-4">
-      <div className="client-logo-track flex w-max items-center gap-5 sm:gap-7">
-        {scrollingClients.map((client, index) => {
-          const logoPath = CLIENT_LOGOS[client.id];
-
-          return (
-            <div
-              key={`${client.id}-${index}`}
-              onClick={() => onClientClick?.(client.id)}
-              className="flex h-24 w-48 shrink-0 cursor-pointer
-                items-center justify-center overflow-hidden
-                rounded-xl border border-slate-200 bg-white p-4
-                shadow-sm transition-shadow duration-300
-                hover:shadow-lg sm:h-28 sm:w-56 sm:p-5"
-            >
-              {logoPath && (
-                <img
-                  src={logoPath}
-                  alt={index < VERIFIED_CLIENTS.length
-                    ? `${client.name} logo`
-                    : ''}
-                  aria-hidden={index >= VERIFIED_CLIENTS.length}
-                  loading="lazy"
-                  draggable={false}
-                  className="h-full w-full object-contain object-center"
-                />
-              )}
-            </div>
-          );
-        })}
-      </div>
-
-      <style>{`
-        .client-logo-track {
-          animation: client-logo-scroll 36s linear infinite;
-          will-change: transform;
-        }
-
-        .client-logo-track:hover {
-          animation-play-state: paused;
-        }
-
-        @keyframes client-logo-scroll {
-          from {
-            transform: translateX(0);
-          }
-          to {
-            transform: translateX(calc(-50% - 0.625rem));
-          }
-        }
-
-        @media (min-width: 640px) {
-          @keyframes client-logo-scroll {
-            from {
-              transform: translateX(0);
-            }
-            to {
-              transform: translateX(calc(-50% - 0.875rem));
-            }
-          }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .client-logo-track {
-            animation: none;
-          }
-        }
-      `}</style>
-    </div>
-  );
-};
-
-
-const CLIENT_LOGOS: Record<string, string> = {
+export const CLIENT_LOGOS: Record<string, string> = {
   'creative-solution-tech': '/images/clients/creative-solution-tech-bg.webp.png',
   'lt': '/images/clients/lt-bg.webp.png',
   'appzon-technologies': '/images/clients/appzon-bg.webp.png',
-  'servicenow': '/images/clients/servicenow-bg.webp.jpg',
-  'anudys-technologies': '/images/clients/anudys-bg.webp.jpg',
+  'servicenow': '/images/clients/servicenow-bg.webp.png',
+  'anudys-technologies': '/images/clients/anudys-bg.webp.png',
   'triochi-concepts': '/images/clients/triochi-bg.webp.png',
   'vanmayi-technologies': '/images/clients/vanmayi-bg.webp.png',
   'creative-conferences': '/images/clients/creative-conferences-bg.webp.png',
@@ -237,9 +164,97 @@ const CLIENT_LOGOS: Record<string, string> = {
 
 export const ClientLogoGrid: React.FC<ClientLogoGridProps> = ({
   onClientClick,
+  className = '',
+  variant = 'grid',
 }) => {
+  // Infinite running items for seamless continuous looping
+  const scrollingClients = [...VERIFIED_CLIENTS, ...VERIFIED_CLIENTS];
+
+  if (variant === 'marquee') {
+    return (
+      <div className={`w-full overflow-hidden py-4 select-none ${className}`}>
+        <div className="client-logo-track flex w-max items-center gap-5 sm:gap-7">
+          {scrollingClients.map((client, index) => {
+            const logoPath = CLIENT_LOGOS[client.id];
+
+            return (
+              <div
+                key={`${client.id}-${index}`}
+                onClick={() => onClientClick?.(client.id)}
+                className="group flex h-28 sm:h-32 md:h-36 w-56 sm:w-64 md:w-72 shrink-0 cursor-pointer
+                  items-center justify-center overflow-hidden
+                  rounded-xl border border-white/15 bg-white p-3.5 sm:p-4.5
+                  shadow-sm transition-all duration-300
+                  hover:border-[#00D9F5]/70 hover:shadow-[0_8px_25px_rgba(0,217,245,0.2)]"
+              >
+                {logoPath ? (
+                  <img
+                    src={logoPath}
+                    alt={index < VERIFIED_CLIENTS.length ? `${client.name} logo` : ''}
+                    aria-hidden={index >= VERIFIED_CLIENTS.length}
+                    loading="eager"
+                    decoding="async"
+                    draggable={false}
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      if (target.src.includes('/images/clients/')) {
+                        target.src = target.src.replace('/images/clients/', '/images/Clients/');
+                      }
+                    }}
+                    className="h-full w-full object-contain object-center transition-transform duration-300 group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="flex items-center justify-center h-full w-full">
+                    {client.logo}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        <style>{`
+          .client-logo-track {
+            animation: client-logo-scroll 32s linear infinite;
+            will-change: transform;
+          }
+
+          .client-logo-track:hover {
+            animation-play-state: paused;
+          }
+
+          @keyframes client-logo-scroll {
+            from {
+              transform: translateX(0);
+            }
+            to {
+              transform: translateX(calc(-50% - 0.625rem));
+            }
+          }
+
+          @media (min-width: 640px) {
+            @keyframes client-logo-scroll {
+              from {
+                transform: translateX(0);
+              }
+              to {
+                transform: translateX(calc(-50% - 0.875rem));
+              }
+            }
+          }
+
+          @media (prefers-reduced-motion: reduce) {
+            .client-logo-track {
+              animation: none;
+            }
+          }
+        `}</style>
+      </div>
+    );
+  }
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+    <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 ${className}`}>
       {VERIFIED_CLIENTS.map((client) => {
         const logoPath = CLIENT_LOGOS[client.id];
 
@@ -247,22 +262,29 @@ export const ClientLogoGrid: React.FC<ClientLogoGridProps> = ({
           <div
             key={client.id}
             onClick={() => onClientClick?.(client.id)}
-            className="group flex h-32 w-full items-center justify-center
-              overflow-hidden rounded-md border border-white/10
-              bg-white p-4 shadow-sm transition-all duration-300
-              hover:border-cyan-400/60 hover:shadow-lg"
+            className="group flex aspect-[2/1] min-h-[140px] sm:min-h-[165px] w-full items-center justify-center
+              overflow-hidden rounded-xl border border-white/15
+              bg-white p-5 sm:p-6 shadow-sm transition-all duration-300 cursor-pointer
+              hover:border-[#00D9F5]/70 hover:shadow-[0_10px_30px_rgba(0,217,245,0.2)]"
           >
             {logoPath ? (
               <img
                 src={logoPath}
                 alt={`${client.name} logo`}
-                loading="lazy"
-                className="h-full w-full object-contain object-center"
+                loading="eager"
+                decoding="async"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  if (target.src.includes('/images/clients/')) {
+                    target.src = target.src.replace('/images/clients/', '/images/Clients/');
+                  }
+                }}
+                className="h-full w-full object-contain object-center transition-transform duration-300 group-hover:scale-105"
               />
             ) : (
-              <span className="text-sm text-slate-500">
-                Logo unavailable
-              </span>
+              <div className="flex items-center justify-center h-full w-full">
+                {client.logo}
+              </div>
             )}
           </div>
         );

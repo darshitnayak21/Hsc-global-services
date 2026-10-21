@@ -164,6 +164,7 @@ export const CareersPage: React.FC<CareersPageProps> = ({ onNavigate, onGetInTou
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
         body: JSON.stringify({
           name: applicantName.trim(),
@@ -176,10 +177,22 @@ export const CareersPage: React.FC<CareersPageProps> = ({ onNavigate, onGetInTou
         }),
       });
 
-      const data = await response.json();
+      let data: any = null;
+      try {
+        const text = await response.text();
+        if (text) {
+          data = JSON.parse(text);
+        }
+      } catch {
+        data = null;
+      }
 
-      if (!response.ok || !data.success) {
-        throw new Error(data.error || 'Failed to submit application. Please check your details and try again.');
+      if (!response.ok || !data?.success) {
+        const defaultMsg =
+          response.status === 503 || response.status === 502
+            ? 'Recruitment email service is not configured. Please set GOOGLE_APPS_SCRIPT_URL to a valid deployed Web App URL.'
+            : 'The recruitment dispatch service could not complete the request. Please contact hscglobalenterprises5@gmail.com directly or try again later.';
+        throw new Error(data?.error || defaultMsg);
       }
 
       setApplicationReceipt({
@@ -188,7 +201,7 @@ export const CareersPage: React.FC<CareersPageProps> = ({ onNavigate, onGetInTou
       });
       setSubmitted(true);
     } catch (err: any) {
-      console.error('Application submission error:', err);
+      console.warn('Application submission notice:', err?.message || err);
       setSubmitError(err.message || 'Unable to connect to recruitment server. Please try again.');
     } finally {
       setIsSubmitting(false);
@@ -424,6 +437,12 @@ export const CareersPage: React.FC<CareersPageProps> = ({ onNavigate, onGetInTou
                     <div role="alert" className="rounded-xl border border-rose-500/40 bg-rose-950/40 p-3.5 text-xs text-rose-200">
                       <p className="font-bold text-rose-300 mb-1">Submission Failed</p>
                       <p>{submitError}</p>
+                      <p className="mt-2 text-slate-300">
+                        You can also send your resume directly to{' '}
+                        <a href="mailto:hscglobalenterprises5@gmail.com" className="text-cyan-300 underline font-semibold hover:text-cyan-200">
+                          hscglobalenterprises5@gmail.com
+                        </a>.
+                      </p>
                     </div>
                   )}
 

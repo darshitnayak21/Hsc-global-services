@@ -244,10 +244,35 @@ export const ClientsPage: React.FC<ClientsPageProps> = ({ onNavigate, onGetInTou
                     className="glass-card rounded-2xl p-7 sm:p-8 border border-[#00D9F5]/30 hover:border-[#00D9F5] bg-[#071A2B]/90 hover:bg-[#0B2235] text-white flex flex-col justify-between space-y-6 shadow-sm hover:shadow-[0_15px_35px_rgba(0,217,245,0.12)] transition-all duration-300 group h-full"
                   >
                     <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <div className="w-12 h-12 rounded-xl bg-[#00D9F5]/10 border border-[#00D9F5]/25 flex items-center justify-center text-[#00D9F5] group-hover:scale-105 transition-transform">
-                          <Building2 className="w-6 h-6" />
-                        </div>
+                      {/* Horizontal landscape client logo banner */}
+                      <div className="w-full aspect-[2.1/1] sm:aspect-[2.2/1] min-h-[120px] sm:min-h-[135px] rounded-xl overflow-hidden bg-white p-4 sm:p-4.5 flex items-center justify-center border border-white/20 shadow-sm transition-transform duration-300 group-hover:scale-[1.02]">
+                        <img
+                          src={
+                            client.id === 'creative-solution-tech'
+                              ? '/images/clients/creative-solution-tech-bg.webp.png'
+                              : client.id === 'lt'
+                              ? '/images/clients/lt-bg.webp.png'
+                              : client.id === 'appzon'
+                              ? '/images/clients/appzon-bg.webp.png'
+                              : client.id === 'servicenow'
+                              ? '/images/clients/servicenow-bg.webp.png'
+                              : client.id === 'anudys'
+                              ? '/images/clients/anudys-bg.webp.png'
+                              : client.id === 'triochi'
+                              ? '/images/clients/triochi-bg.webp.png'
+                              : client.id === 'vanmayi'
+                              ? '/images/clients/vanmayi-bg.webp.png'
+                              : client.id === 'creative-conferences'
+                              ? '/images/clients/creative-conferences-bg.webp.png'
+                              : '/images/clients/stage-innovations-bg.webp.png'
+                          }
+                          alt={`${client.name} logo`}
+                          className="h-full w-full object-contain object-center"
+                          loading="lazy"
+                        />
+                      </div>
+
+                      <div className="flex items-center justify-between pt-1">
                         <span className="text-xs sm:text-sm font-mono px-3 py-1 rounded-full bg-[#00D9F5]/10 border border-[#00D9F5]/25 text-[#35DDB5] font-semibold">
                           {client.sector}
                         </span>

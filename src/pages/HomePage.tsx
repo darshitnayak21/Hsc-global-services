@@ -142,47 +142,59 @@ const ClientLogoCarousel: React.FC<{ clients: ClientItem[] }> = ({ clients }) =>
           setPaused(false);
         }
       }}
-      aria-label="Client logo carousel"
+      aria-label="Client logo showcase"
     >
       <style>{`
+        /* Landscape 2:1 ratio carousel stage */
         .client-carousel-stage {
           position: relative;
-          height: 210px;
+          height: 255px;
           width: 100%;
+          overflow: visible;
         }
 
+        /* Horizontal landscape cards matching client images 2:1 aspect ratio */
         .client-carousel-card {
           position: absolute;
           top: 50%;
           left: 50%;
-          width: 260px;
-          height: 150px;
-          transform: translate(calc(-50% + var(--card-x)), -50%)
-            scale(var(--card-scale));
+          width: 370px;
+          height: 185px;
+          transform: translate(calc(-50% + var(--card-x)), -50%) scale(var(--card-scale));
           transform-origin: center center;
-          transition: transform 720ms cubic-bezier(.22,.75,.25,1),
-            opacity 500ms ease, box-shadow 500ms ease;
-          border: 1px solid rgba(0,217,245,.35);
-          border-radius: 8px;
-          box-shadow: 0 10px 28px -4px rgba(0,0,0,.35);
+          transition: transform 720ms cubic-bezier(.22,.75,.25,1), opacity 500ms ease, box-shadow 500ms ease, border-color 500ms ease;
+          border: 1px solid rgba(0, 217, 245, 0.35);
+          border-radius: 14px;
+          background: #ffffff;
+          box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.45), 0 2px 10px rgba(0, 217, 245, 0.1);
           will-change: transform;
         }
 
         .client-carousel-card.is-active {
-          border-color: rgba(0,217,245,.95);
-          box-shadow: 0 0 20px rgba(0,217,245,.24);
+          border-color: rgba(0, 217, 245, 0.95);
+          box-shadow: 0 18px 40px -6px rgba(0, 0, 0, 0.55), 0 0 28px rgba(0, 217, 245, 0.35);
+        }
+
+        @media (max-width: 1024px) {
+          .client-carousel-stage {
+            height: 220px;
+          }
+          .client-carousel-card {
+            width: 315px;
+            height: 158px;
+            transform: translate(calc(-50% + var(--card-x-tablet)), -50%) scale(var(--card-scale));
+          }
         }
 
         @media (max-width: 640px) {
           .client-carousel-stage {
-            height: 170px;
+            height: 180px;
           }
-
           .client-carousel-card {
-            width: 190px;
-            height: 112px;
-            transform: translate(calc(-50% + var(--card-x-mobile)), -50%)
-              scale(var(--card-scale));
+            width: 250px;
+            height: 125px;
+            border-radius: 12px;
+            transform: translate(calc(-50% + var(--card-x-mobile)), -50%) scale(var(--card-scale));
           }
         }
 
@@ -197,49 +209,57 @@ const ClientLogoCarousel: React.FC<{ clients: ClientItem[] }> = ({ clients }) =>
         {clients.map((client, index) => {
           const offset = getOffset(index);
           const visible = Math.abs(offset) <= 2;
-          const scale = offset === 0 ? 1.12 : Math.abs(offset) === 1 ? 0.94 : 0.82;
+          const scale = offset === 0 ? 1.08 : Math.abs(offset) === 1 ? 0.92 : 0.78;
 
           return (
             <article
               key={client.name}
               onClick={() => setActiveIndex(index)}
-              className={`client-carousel-card flex items-center justify-center overflow-hidden bg-white p-4 sm:p-5 ${
-                offset === 0 ? 'is-active' : ''
+              className={`client-carousel-card flex items-center justify-center overflow-hidden bg-white p-4 sm:p-5 cursor-pointer ${
+                offset === 0 ? 'is-active cursor-default' : ''
               }`}
               style={{
-                ['--card-x' as string]: `${offset * 280}px`,
-                ['--card-x-mobile' as string]: `${offset * 205}px`,
+                ['--card-x' as string]: `${offset * 395}px`,
+                ['--card-x-tablet' as string]: `${offset * 335}px`,
+                ['--card-x-mobile' as string]: `${offset * 260}px`,
                 ['--card-scale' as string]: scale,
                 zIndex: 10 - Math.abs(offset),
-                opacity: visible ? (Math.abs(offset) === 2 ? 0.45 : 1) : 0,
+                opacity: visible ? (Math.abs(offset) === 2 ? 0.45 : offset === 0 ? 1 : 0.85) : 0,
                 pointerEvents: visible ? 'auto' : 'none',
               } as React.CSSProperties}
               aria-label={`${client.name} logo`}
               aria-current={offset === 0 ? 'true' : undefined}
             >
+              {/* Only the landscape client logo image: perfect fit, no cropping, no stretching */}
               <img
                 src={client.bg}
-                alt={index === activeIndex ? `${client.name} logo` : ''}
-                aria-hidden={index !== activeIndex}
-                loading="lazy"
+                alt={`${client.name} logo`}
+                loading="eager"
                 decoding="async"
                 draggable={false}
-                className="h-full w-full object-contain object-center"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  if (target.src.includes('/images/clients/')) {
+                    target.src = target.src.replace('/images/clients/', '/images/Clients/');
+                  }
+                }}
+                className="h-full w-full object-contain object-center select-none transition-transform duration-300 group-hover:scale-105"
               />
             </article>
           );
         })}
       </div>
 
+      {/* Navigation Controls: Arrows and Indicators */}
       <div
-        className="mt-4 flex items-center justify-center gap-3 sm:gap-4"
+        className="mt-6 flex items-center justify-center gap-3 sm:gap-4"
         aria-label="Carousel navigation"
       >
         <button
           type="button"
           onClick={handlePrev}
           aria-label="Previous client"
-          className="p-2 rounded-full bg-[#071A2B]/90 hover:bg-[#00D9F5]/20 text-slate-300 hover:text-[#00D9F5] border border-[#00D9F5]/30 transition-colors cursor-pointer"
+          className="p-2.5 rounded-full bg-[#071A2B]/90 hover:bg-[#00D9F5]/20 text-slate-300 hover:text-[#00D9F5] border border-[#00D9F5]/30 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00D9F5] shadow-sm cursor-pointer"
         >
           <ChevronLeft className="w-4 h-4" />
         </button>
@@ -252,7 +272,7 @@ const ClientLogoCarousel: React.FC<{ clients: ClientItem[] }> = ({ clients }) =>
               onClick={() => setActiveIndex(index)}
               aria-label={`Show ${client.name}`}
               aria-pressed={activeIndex === index}
-              className={`h-2 rounded-full transition-all duration-300 ${
+              className={`h-2 rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00D9F5] cursor-pointer ${
                 activeIndex === index
                   ? 'w-6 bg-[#00D9F5]'
                   : 'w-2 bg-slate-600 hover:bg-[#35DDB5]'
@@ -265,7 +285,7 @@ const ClientLogoCarousel: React.FC<{ clients: ClientItem[] }> = ({ clients }) =>
           type="button"
           onClick={handleNext}
           aria-label="Next client"
-          className="p-2 rounded-full bg-[#071A2B]/90 hover:bg-[#00D9F5]/20 text-slate-300 hover:text-[#00D9F5] border border-[#00D9F5]/30 transition-colors cursor-pointer"
+          className="p-2.5 rounded-full bg-[#071A2B]/90 hover:bg-[#00D9F5]/20 text-slate-300 hover:text-[#00D9F5] border border-[#00D9F5]/30 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00D9F5] shadow-sm cursor-pointer"
         >
           <ChevronRight className="w-4 h-4" />
         </button>
@@ -333,53 +353,52 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onGetInTouch }) 
     }, 800);
   };
 
-  // Verified Client Partnerships. Automatically uses transparent logos from src/images/clients/ when present,
-  // falling back seamlessly to default verified client images in public/images/Clients/.
+  // Verified Client Partnerships directly from public/images/clients
   const clients: ClientItem[] = [
     {
       name: 'Creative Solution Tech',
       tag: 'Enterprise IT & Cloud Engineering',
-      bg: getClientLogoUrl('creative-solution', '/images/Clients/creative-solution-tech-bg.webp.png'),
+      bg: '/images/clients/creative-solution-tech-bg.webp.png',
     },
     {
       name: 'L&T',
       tag: 'Engineering & Global Infrastructure',
-      bg: getClientLogoUrl('lt', '/images/Clients/lt-bg.webp.png'),
+      bg: '/images/clients/lt-bg.webp.png',
     },
     {
       name: 'Appzon Technologies Pvt. Ltd.',
       tag: 'Software Development & Apps',
-      bg: getClientLogoUrl('appzon', '/images/Clients/appzon-bg.webp.png'),
+      bg: '/images/clients/appzon-bg.webp.png',
     },
     {
       name: 'ServiceNow',
       tag: 'Cloud Computing & Digital Workflows',
-      bg: getClientLogoUrl('servicenow', '/images/Clients/servicenow-bg.webp.jpg'),
+      bg: '/images/clients/servicenow-bg.webp.png',
     },
     {
       name: 'Anudys Technologies Pvt. Ltd.',
       tag: 'IT Consulting & Services',
-      bg: getClientLogoUrl('anudys', '/images/Clients/anudys-bg.webp.jpg'),
+      bg: '/images/clients/anudys-bg.webp.png',
     },
     {
       name: 'Triochi Concepts',
       tag: 'Creative & Digital Solutions',
-      bg: getClientLogoUrl('triochi', '/images/Clients/triochi-bg.webp.png'),
+      bg: '/images/clients/triochi-bg.webp.png',
     },
     {
       name: 'Vanmayi Technologies',
       tag: 'Software & Technology Systems',
-      bg: getClientLogoUrl('vanmayi', '/images/Clients/vanmayi-bg.webp.png'),
+      bg: '/images/clients/vanmayi-bg.webp.png',
     },
     {
       name: 'Creative Conferences',
       tag: 'Conferences & Exhibitions',
-      bg: getClientLogoUrl('creative-conferences', '/images/Clients/creative-conferences-bg.webp.png'),
+      bg: '/images/clients/creative-conferences-bg.webp.png',
     },
     {
       name: 'Stage Innovations',
       tag: 'Innovation & Digital Media',
-      bg: getClientLogoUrl('stage-innovations', '/images/Clients/stage-innovations-bg.webp.png'),
+      bg: '/images/clients/stage-innovations-bg.webp.png',
     },
   ];
 
